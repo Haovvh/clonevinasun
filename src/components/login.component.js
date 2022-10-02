@@ -100,6 +100,7 @@ class Login extends Component {
             <div className="form-group">
               <label htmlFor="username">Username</label>
               <Input
+                placeholder="User Name"
                 type="text"
                 className="form-control"
                 name="username"
@@ -112,6 +113,7 @@ class Login extends Component {
             <div className="form-group">
               <label htmlFor="password">Password</label>
               <Input
+                placeholder="Password"
                 type="password"
                 className="form-control"
                 name="password"

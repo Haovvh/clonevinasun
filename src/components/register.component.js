@@ -122,6 +122,9 @@ export default class Register extends Component {
 
   render() {
     return (
+      <React.Fragment>
+
+      
       <div className="col-md-12">
         <div className="card card-container">
           <img
@@ -141,6 +144,7 @@ export default class Register extends Component {
                 <div className="form-group">
                   <label htmlFor="username">Username</label>
                   <Input
+                    placeholder="User Name"
                     type="text"
                     className="form-control"
                     name="username"
@@ -153,6 +157,7 @@ export default class Register extends Component {
                 <div className="form-group">
                   <label htmlFor="email">Email</label>
                   <Input
+                    placeholder="example@email.com"
                     type="text"
                     className="form-control"
                     name="email"
@@ -165,6 +170,7 @@ export default class Register extends Component {
                 <div className="form-group">
                   <label htmlFor="password">Password</label>
                   <Input
+                    placeholder="Password"
                     type="password"
                     className="form-control"
                     name="password"
@@ -173,6 +179,7 @@ export default class Register extends Component {
                     validations={[required, vpassword]}
                   />
                 </div>
+                
 
                 <div className="form-group">
                   <button className="btn btn-primary btn-block">Sign Up</button>
@@ -203,6 +210,10 @@ export default class Register extends Component {
           </Form>
         </div>
       </div>
+      <div>
+        
+      </div>
+      </React.Fragment>
     );
   }
 }

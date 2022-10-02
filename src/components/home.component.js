@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import UserService from "../services/user.service";
 
-import GongMap from "../GoongMap";
+import GongMap from "../Goong/GoongMap";
 
 export default class Home extends Component {
   constructor(props) {
