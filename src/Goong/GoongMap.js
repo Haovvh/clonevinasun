@@ -9,7 +9,7 @@ const geolocateControlStyle= {
   top: 10
 };
 
-function GongMap() {
+function GoongMap() {
   const [viewport, setViewport] = useState({
     latitude: 10.739,
     longitude: 106.6657,
@@ -42,6 +42,6 @@ function GongMap() {
   );
 }
 
-export default GongMap;
+export default GoongMap;
 
 

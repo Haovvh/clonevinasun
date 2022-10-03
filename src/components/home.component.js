@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import UserService from "../services/user.service";
 
-import GongMap from "../Goong/GoongMap";
+import GoongMap from "../Goong/GoongMap";
 
 export default class Home extends Component {
   constructor(props) {
@@ -40,7 +40,7 @@ export default class Home extends Component {
           </header>
           </div>
         <div className="col">
-          <GongMap/>
+          <GoongMap/>
         </div>
        
         
