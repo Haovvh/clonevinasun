@@ -21,31 +21,31 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.handleLogin = this.handleLogin.bind(this);
-    this.onChangeUsername = this.onChangeUsername.bind(this);
+    this.onChangeEmail = this.onChangeEmail.bind(this);
     this.onChangePassword = this.onChangePassword.bind(this);
 
     this.state = {
-      username: "",
+      email: "",
       password: "",
       loading: false,
       message: ""
     };
   }
 
-  onChangeUsername(e) {
+  onChangeEmail(event) {
     this.setState({
-      username: e.target.value
+      email: event.target.value
     });
   }
 
-  onChangePassword(e) {
+  onChangePassword(event) {
     this.setState({
-      password: e.target.value
+      password: event.target.value
     });
   }
 
-  handleLogin(e) {
-    e.preventDefault();
+  handleLogin(event) {
+    event.preventDefault();
 
     this.setState({
       message: "",
@@ -55,10 +55,11 @@ class Login extends Component {
     this.form.validateAll();
 
     if (this.checkBtn.context._errors.length === 0) {
-      AuthService.login(this.state.username, this.state.password).then(
+      AuthService.login(this.state.email, this.state.password).then(
         () => {
-          this.props.router.navigate("/profile");
-          window.location.reload();
+          console.log("success")
+          //this.props.router.navigate("/profile");
+          //window.location.reload();
         },
         error => {
           const resMessage =
@@ -98,14 +99,14 @@ class Login extends Component {
             }}
           >
             <div className="form-group">
-              <label htmlFor="username">Username</label>
+              <label htmlFor="email">Email</label>
               <Input
-                placeholder="User Name"
+                placeholder="example@email.com"
                 type="text"
                 className="form-control"
-                name="username"
-                value={this.state.username}
-                onChange={this.onChangeUsername}
+                name="email"
+                value={this.state.email}
+                onChange={this.onChangeEmail}
                 validations={[required]}
               />
             </div>

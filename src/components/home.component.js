@@ -40,7 +40,7 @@ export default class Home extends Component {
           </header>
           </div>
         <div className="col">
-          <GoongMap/>
+          
         </div>
        
         

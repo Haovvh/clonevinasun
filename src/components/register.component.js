@@ -63,26 +63,26 @@ export default class Register extends Component {
     };
   }
 
-  onChangeUsername(e) {
+  onChangeUsername(event) {
     this.setState({
-      username: e.target.value
+      username: event.target.value
     });
   }
 
-  onChangeEmail(e) {
+  onChangeEmail(event) {
     this.setState({
-      email: e.target.value
+      email: event.target.value
     });
   }
 
-  onChangePassword(e) {
+  onChangePassword(event) {
     this.setState({
-      password: e.target.value
+      password: event.target.value
     });
   }
 
-  handleRegister(e) {
-    e.preventDefault();
+  handleRegister(event) {
+    event.preventDefault();
 
     this.setState({
       message: "",
@@ -97,11 +97,14 @@ export default class Register extends Component {
         this.state.email,
         this.state.password
       ).then(
+        
         response => {
+          
           this.setState({
             message: response.data.message,
             successful: true
           });
+          console.log(response.data.message)
         },
         error => {
           const resMessage =
@@ -122,9 +125,7 @@ export default class Register extends Component {
 
   render() {
     return (
-      <React.Fragment>
-
-      
+      <React.Fragment>      
       <div className="col-md-12">
         <div className="card card-container">
           <img
