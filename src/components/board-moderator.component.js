@@ -40,6 +40,7 @@ export default class BoardModerator extends Component {
     return (
       <div className="container">
         <header className="jumbotron">
+          <h3>Mod</h3>
           <h3>{this.state.content}</h3>
         </header>
       </div>
