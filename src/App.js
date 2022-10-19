@@ -9,9 +9,9 @@ import Login from "./components/login.component";
 import Register from "./components/register.component";
 import Home from "./components/home.component";
 import Profile from "./components/profile.component";
-import BoardUser from "./components/board-user.component";
-import BoardModerator from "./components/board-moderator.component";
-import BoardAdmin from "./components/board-admin.component";
+import Passenger from "./components/passengers.component";
+import Driver from "./components/drivers.component";
+import SupportStaff from "./components/supportstaff.component";
 
 // import AuthVerify from "./common/auth-verify";
 import EventBus from "./common/EventBus";
@@ -22,20 +22,22 @@ class App extends Component {
     this.logOut = this.logOut.bind(this);
 
     this.state = {
-      showModeratorBoard: "",
-      showAdminBoard: "",
-      currentUser: undefined,
+      showDriver: false,
+      showPassenger: false,
+      showSupportStaff: false,
+      currentUser: undefined
     };
   }
 
   componentDidMount() {
     const user = AuthService.getCurrentUser();
-
+    console.log(user)
     if (user) {
-      this.setState({
-        currentUser: user,
-        showModeratorBoard: user.name,
-        showAdminBoard: user.name,
+      this.setState({        
+        showDriver: user.roles.includes('ROLE_DRIVER'),
+        showPassenger: user.roles.includes('ROLE_PASSENGER'),
+        showSupportStaff: user.roles.includes('ROLE_SUPPORTSTAFF'),
+        currentUser: user,      
       });
     }
     
@@ -51,20 +53,21 @@ class App extends Component {
   logOut() {
     AuthService.logout();
     this.setState({
-      showModeratorBoard: "",
-      showAdminBoard: "",
+      showDriver: false,
+      showPassenger: false,
+      showSupportStaff: false,
       currentUser: undefined,
     });
   }
 
   render() {
-    const { currentUser, showModeratorBoard, showAdminBoard } = this.state;
+    const { currentUser, showDriver, showPassenger, showSupportStaff } = this.state;
 
     return (
       <div>
         <nav className="navbar navbar-expand navbar-dark bg-dark">
           <Link to={"/"} className="navbar-brand">
-            bezKoder
+            GoCarVietNam
           </Link>
           <div className="navbar-nav mr-auto">
             <li className="nav-item">
@@ -73,26 +76,26 @@ class App extends Component {
               </Link>
             </li>
 
-            {showModeratorBoard ==="ROLE_DRIVER" && (
+            {showDriver  && (
               <li className="nav-item">
-                <Link to={"/mod"} className="nav-link">
-                  Moderator Board
+                <Link to={"/driver"} className="nav-link">
+                  Driver
                 </Link>
               </li>
             )}
 
-            {showAdminBoard === "ROLE_ADMIN" && (
+            {showSupportStaff  && (
               <li className="nav-item">
-                <Link to={"/admin"} className="nav-link">
-                  Admin Board
+                <Link to={"/supportstaff"} className="nav-link">
+                  Support Staff
                 </Link>
               </li>
             )}
 
-            {currentUser && (
+            {showPassenger && (
               <li className="nav-item">
-                <Link to={"/user"} className="nav-link">
-                  User
+                <Link to={"/passenger"} className="nav-link">
+                  Passenger
                 </Link>
               </li>
             )}
@@ -135,9 +138,9 @@ class App extends Component {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/user" element={<BoardUser />} />
-            <Route path="/mod" element={<BoardModerator />} />
-            <Route path="/admin" element={<BoardAdmin />} />
+            <Route path="/passenger" element={<Passenger />} />
+            <Route path="/driver" element={<Driver/>} />
+            <Route path="/supportstaff" element={<SupportStaff />} />
           </Routes>
         </div>
 
