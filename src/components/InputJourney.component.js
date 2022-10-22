@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-
-
 import GoongAPI from "../Goong/GoongAPI";
 import GoongMap from "../Goong/GoongMap";
 import journey from "../services/journey.service";
