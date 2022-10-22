@@ -46,7 +46,7 @@ export default function CustomerInfo(props) {
             <div>
                 <h1>Lịch sử các cuộc gọi gần nhất:</h1>
             </div>
-            <div className="container totalTable">
+            <div className="card card-container totalTable">
                 <div className="col-md-12">
                     <table>
                         <tbody>
@@ -71,7 +71,7 @@ export default function CustomerInfo(props) {
             <div>
                 <h1>Lịch sử các chuyến đi:</h1>
             </div>
-            <div className="container totalTable">
+            <div className="card card-container totalTable">
                 <div className="col-md-12">
                     <table>
                         <tbody>

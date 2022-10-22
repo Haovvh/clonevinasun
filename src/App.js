@@ -31,7 +31,7 @@ class App extends Component {
 
   componentDidMount() {
     const user = AuthService.getCurrentUser();
-    console.log(user)
+    
     if (user) {
       this.setState({        
         showDriver: user.roles.includes('ROLE_DRIVER'),
@@ -59,24 +59,29 @@ class App extends Component {
       currentUser: undefined,
     });
   }
+  
 
   render() {
     const { currentUser, showDriver, showPassenger, showSupportStaff } = this.state;
-
+    
     return (
       <div>
         <nav className="navbar navbar-expand navbar-dark bg-dark">
+          
           <Link to={"/"} className="navbar-brand">
             GoCarVietNam
           </Link>
           <div className="navbar-nav mr-auto">
-            <li className="nav-item">
+            { currentUser && (
+              <li className="nav-item">
               <Link to={"/home"} className="nav-link">
                 Home
               </Link>
             </li>
+            )              
+            }        
 
-            {showDriver  && (
+            { currentUser && showDriver  && (
               <li className="nav-item">
                 <Link to={"/driver"} className="nav-link">
                   Driver
@@ -84,7 +89,7 @@ class App extends Component {
               </li>
             )}
 
-            {showSupportStaff  && (
+            { currentUser && showSupportStaff  && (
               <li className="nav-item">
                 <Link to={"/supportstaff"} className="nav-link">
                   Support Staff
@@ -92,7 +97,7 @@ class App extends Component {
               </li>
             )}
 
-            {showPassenger && (
+            { currentUser && showPassenger && (
               <li className="nav-item">
                 <Link to={"/passenger"} className="nav-link">
                   Passenger
@@ -105,7 +110,7 @@ class App extends Component {
             <div className="navbar-nav ml-auto">
               <li className="nav-item">
                 <Link to={"/profile"} className="nav-link">
-                  {currentUser.username}
+                  Xin chào {currentUser.name}
                 </Link>
               </li>
               <li className="nav-item">
