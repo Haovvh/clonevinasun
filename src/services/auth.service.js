@@ -4,7 +4,7 @@ import axios from "axios";
 class AuthService {
   login(email, password) {
     return axios
-      .post(process.env.REACT_APP_API_URL + "/auth/login", {
+      .post(process.env.REACT_APP_API_URL + "/login/login", {
         email,
         password
       })
@@ -13,7 +13,6 @@ class AuthService {
         if (response.data.accessToken) {
           localStorage.setItem("user", JSON.stringify(response.data));
         }
-
         return response.data;
       });
   }
@@ -23,7 +22,7 @@ class AuthService {
   }
 
   register(username, email, password) {
-    return axios.post(process.env.REACT_APP_API_URL + "/user/add-new-user", {
+    return axios.post(process.env.REACT_APP_API_URL + "/user/post-user", {
       username,
       email,
       password

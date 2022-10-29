@@ -1,21 +1,34 @@
-import React, { useState } from "react";
+import React from "react";
 
+const required = value => {
+    if (!value) {
+      return (
+        <div className="alert alert-danger" role="alert">
+          This field is required!
+        </div>
+      );
+    }
+  };
+  
 export default function AcceptJourney(props) {
-    const [theRideComplete, setTheRideComplete] = useState(true)
     
-    if (props.isTrips === "Offline") {
-        return null;
+    if (!props.info.Passenger_ID) {
+        return <React.Fragment>
+
+        </React.Fragment>
+       
     }
     return (
         <React.Fragment>
-            <div className="card card-container">
+            
+            <div className=" card-container">
                 <div className=" col-md-12">
                     <div className="form-group">
                         <label htmlFor="username">Họ tên khách:</label>
                         <input
                             type="text"
                             className="form-control"
-                            value={props.info.name}
+                            value={props.info.Fullname}
                             disabled
                         />
                     </div>
@@ -24,7 +37,7 @@ export default function AcceptJourney(props) {
                         <input
                             type="text"
                             className="form-control"
-                            value={props.info.sdt}
+                            value={props.info.Phone}
                             disabled
                         />
                     </div>
@@ -33,24 +46,28 @@ export default function AcceptJourney(props) {
                         <input
                             type="text"
                             className="form-control"
-                            value={props.info.placeFrom}
+                            value={props.info.origin_Fulladdress}
                             disabled
                         />
                     </div>
                     <div className="form-group">
                         <label htmlFor="">Điểm đến:</label>
                         <input
-                            placeholder="Điểm đến"
                             type="text"
                             className="form-control"
-                            value={props.info.placeTo}
+                            value={props.info.destination_Fulladdress}
                             disabled
                         />
-                    </div>
-                    <button className="btn btn-primary btn-block"
-                        onClick={() => { setTheRideComplete(!theRideComplete) }}>
-                        Accept Trips
-                    </button>
+                    </div>    
+                    <div className="form-group">
+                        <label htmlFor="">Thành Tiền:</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={props.info.Price + " VND"}
+                            disabled
+                        />
+                    </div>                 
                 </div>
             </div>
         </React.Fragment>

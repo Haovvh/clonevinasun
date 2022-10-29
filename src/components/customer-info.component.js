@@ -1,6 +1,15 @@
 import React, { useState } from "react";
 import "../css/table.css"
 
+const required = value => {
+    if (!value) {
+      return (
+        <div className="alert alert-danger" role="alert">
+          This field is required!
+        </div>
+      );
+    }
+  };
 
 export default function CustomerInfo(props) {
     const [callHistory, setCallHistory] = useState([

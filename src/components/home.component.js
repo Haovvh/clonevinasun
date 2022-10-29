@@ -12,8 +12,7 @@ export default function Home () {
           </div>
         <div className="col">
           
-        </div>
-       
+        </div>      
         
       </div>
     );

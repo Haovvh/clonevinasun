@@ -2,13 +2,15 @@ import React, {useEffect} from 'react';
 import { useState } from 'react';
 import ReactMapGL, { GeolocateControl, Source, Layer } from '@goongmaps/goong-map-react';
 import { MAP_KEY } from './GoongKEY';
+import socketIOClient from "socket.io-client";
+import authHeader from '../services/auth-header';
 
 
 const geolocateControlStyle = {
   right: 10,
   top: 10
 };
-export default function GongMap(props) {
+export default function GongMapDriver(props) {
   
   const [viewport, setViewport] = useState({
     latitude: 10.739,
@@ -29,9 +31,38 @@ export default function GongMap(props) {
       'line-color': '#1e88e5',
       'line-width': 8
     }
-  };
+  };  
+  
+
+  useEffect (()=>{
+      var delay = 10000;
+      if (!props.Online) {
+          delay = 600000000
+      } else {
+        delay = 10000
+      }
+      const intervalId = setInterval( () => {
+        const param = { query: 'token=' }
+          const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
+          
+          socket.emit("update_lat_lng", {
+            id: authHeader().id,
+            LAT: viewport.latitude,
+            LNG: viewport.longitude
+          });
+      }, delay) 
+      return () => clearInterval(intervalId); //This is important   
+    
+    },[viewport.latitude, viewport.longitude]
+  ) 
+  
+
+  
   return (
-    <ReactMapGL className='container'
+    <React.Fragment>
+
+    {!props.Online ? (<h1>Bạn đang Offline</h1>) :
+    (<ReactMapGL className='container'
       {...viewport}
       width="60vw"
       height="60vh"
@@ -51,8 +82,8 @@ export default function GongMap(props) {
         data= {geojson}>
         <Layer {...layerStyle} />
       </Source>
-    </ReactMapGL>
-    
+    </ReactMapGL>)}
+    </React.Fragment>
   );
 }
 

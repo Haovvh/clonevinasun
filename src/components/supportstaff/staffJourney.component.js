@@ -1,69 +1,81 @@
-import React, { useState } from "react";
-import GoongAPI from "../Goong/GoongAPI";
-import GoongMap from "../Goong/GoongMap";
-import journey from "../services/journey.service";
+import React, { useState, useEffect } from "react";
+import GoongAPI from "../../Goong/GoongAPI";
+import socketIOClient from "socket.io-client";
+import authHeader from "../../services/auth-header";
+import journeyService from "../../services/journey.service";
+import DriverJourney from "../passengers/driverJourney.component";
 
-const decode = require('geojson-polyline').decode
 
+const required = value => {
+    if (!value) {
+      return (
+        <div className="alert alert-danger" role="alert">
+          This field is required!
+        </div>
+      );
+    }
+  };
 
-function Place(props) {
-    return <option value={props.place}/>
-}
+export default function StaffJourney (props) {
 
-export default function InputJourney (props) {
     const [status, setStatus] = useState("showtripinfo")
-    const [places, setPlaces] = useState([
-        { place: "122 Trường chinh thân phú", count: 7 },
-        { place: "123 Trường chinh thân phú", count: 6 },
-        { place: "124 Trường chinh thân phú", count: 5 },
-        { place: "125 Trường chinh thân phú", count: 4 },
-        { place: "126 Trường chinh thân phú", count: 3 }
-    ])
+    const [places, setPlaces] = useState([])
     const [distance_km, setDistance_km] = useState();
     const [distance, setDistance] = useState("")
     const [duration, setDuration] = useState("")
     const [placeFrom, setPlaceFrom] = useState("");
+    const [origin_Id, setOrigin_Id] = useState("");
+    const [placeFrom_lat, setPlaceFrom_lat] = useState(0);
+    const [placeFrom_lng, setPlaceFrom_lng] = useState(0);
     const [placeTo, setPlaceTo] = useState("");
-    const [points, setPoints] = useState("")
+    const [destination_Id, setDestination_Id] = useState("");
+    const [placeTo_lat, setPlaceTo_lat] = useState(0);
+    const [placeTo_lng, setPlaceTo_lng] = useState(0);
+    const [pointCodes, setPointCodes] = useState("")
     const [coordinates, setCoordinates]= useState([])
     const [disabled, setDisabled] = useState(false);
+    const [driverJouney, setDriverJourney] = useState();
 
+    
+
+    //lấy giá trị trong textbox 
     const handlePlaceFrom = (event) => {        
         setPlaceFrom(event.target.value)
     }
     const handlePlaceTo = (event) => {
         setPlaceTo(event.target.value)
     }
+    //event click
     const handleOnClick = async () => {
         if(status === "showtripinfo") {
             try {
-                if (placeFrom.trim() !== "" && placeTo.trim() !== "") {
-                    
+                if (placeFrom !== null && placeTo !== null) {
+                    console.log("Khong duoc null")
                     const origins = await GoongAPI.getGeocode(placeFrom);
-                    setPlaceFrom(origins.data.results[0].formatted_address)                   
+                    setOrigin_Id(origins.data.results[0].place_id)
                     
+
+                    setPlaceFrom(origins.data.results[0].formatted_address)                   
+                    setPlaceFrom_lat(await origins.data.results[0].geometry.location.lat)
+                    setPlaceFrom_lng(await origins.data.results[0].geometry.location.lng)
                     const jsonorigins = await origins.data.results[0].geometry.location.lat + ',' + origins.data.results[0].geometry.location.lng
     
                     const destinations = await GoongAPI.getGeocode(placeTo);
+                    setDestination_Id(destinations.data.results[0].place_id)
                     setPlaceTo(destinations.data.results[0].formatted_address)
-                    
+                    setPlaceTo_lat(await destinations.data.results[0].geometry.location.lat)
+                    setPlaceTo_lng(await destinations.data.results[0].geometry.location.lng)
                     const jsondestinations = await destinations.data.results[0].geometry.location.lat + ',' + destinations.data.results[0].geometry.location.lng
     
                     if (jsonorigins && jsondestinations) {
-                        const distance = await GoongAPI.getDirection(jsonorigins,jsondestinations);
-                        
-                        const json = await distance.data.routes[0]
-                        
+
+                        const distance = await GoongAPI.getDirection(jsonorigins,jsondestinations);                        
+                        const json = await distance.data.routes[0]                        
                         console.log(json.legs[0].distance.text)
                         console.log(json.legs[0].duration.text)
+                        console.log(json.overview_polyline.points);
+                        setPointCodes(json.overview_polyline.points)
                         
-                        const LineString = {
-                            type: 'LineString',
-                            coordinates: json.overview_polyline.points
-                        };
-                        const geoJSON = decode(LineString)
-                        setCoordinates(geoJSON.coordinates)
-                        setPoints(json.overview_polyline.points)
                         setDistance("Quảng đường: " + json.legs[0].distance.text)
                         setDistance_km(parseInt(json.legs[0].distance.value)/1000)
                         setDuration("Thời gian: " + json.legs[0].duration.text)
@@ -81,22 +93,33 @@ export default function InputJourney (props) {
             
         } else if (status === "bookdriver") {
             console.log("Book driver")
-            console.log("success")
-            journey.createjourney(placeFrom , placeTo, 100, distance_km , points).then(
-                response => {
-                    console.log(response.data.message)
-                    setStatus("completeTrip")
-                  },
-                  error => {
-                    const resMessage =
-                      (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                      error.message ||
-                      error.toString();
-                        console.log(error)                    
-                    }            
-            )        
+            const param = { query: 'token=' }
+            const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param ) 
+            //socket gọi đến server tìm tài xế
+            socket.emit("calldriver", {
+                //data gửi kèm đến server
+                User_ID: props.Info.User_ID,
+                origin: {
+                    placeId: origin_Id,
+                    fulladdress: placeFrom,
+                    origin_lat: placeFrom_lat,
+                    origin_lng: placeFrom_lng
+                },
+                destination: {
+                    placeId: destination_Id,
+                    fulladdress: placeTo,
+                    destination_lat: placeTo_lat,
+                    destination_lng: placeTo_lng
+                },
+                distance_km: distance_km,
+                pointCode: pointCodes,
+                Price: distance_km * 10000,
+                Fullname: props.Info.Fullname,
+                Phone: props.Info.Phone
+            });
+            
+            setStatus("completeTrip")           
+        
         }
         else if (status === "completeTrip") {
             console.log("completeTrip");
@@ -105,17 +128,14 @@ export default function InputJourney (props) {
             setDuration("")
             setPlaceFrom("");
             setPlaceTo("");
-            setPoints("");
+            setPointCodes("");
             setCoordinates([]);
             setStatus("showtripinfo");
             setDisabled(false)
         }        
     }
-        
-    if (!props.warn) {
-        return null;
-    }
-
+    //
+//
     return (
         <React.Fragment>
             <div className="container">
@@ -140,7 +160,8 @@ export default function InputJourney (props) {
                             disabled={disabled}
                         />
                         <datalist id="placeFrom">
-                            {places.map((val) => <Place place={val.place}/>)} 
+                            {props.place.map((item, key) => 
+                            <option key = {key} value={item.origin_Fulladdress}/>)} 
                         </datalist>
                     </div>
                     <div className="form-group">
@@ -155,7 +176,8 @@ export default function InputJourney (props) {
                             disabled={disabled}
                         />
                         <datalist id="placeTo">
-                            {places.map((val) => <Place place={val.place}/>)}
+                            {props.place.map((item, key) => 
+                            <option key = {key} value={item.origin_Fulladdress}/>)} 
                         </datalist>
                     </div>
                     <div className="form-group">
@@ -183,8 +205,11 @@ export default function InputJourney (props) {
                         </div>
                     </div>
                 </div>
+
             </div>
-            <GoongMap coordinates={coordinates} />
+            <div>
+                <DriverJourney info ={driverJouney}/>
+            </div>
         </React.Fragment>
     );
 }
