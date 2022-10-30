@@ -12,7 +12,7 @@ const required = value => {
   
 export default function AcceptJourney(props) {
     
-    if (!props.info.Passenger_ID) {
+    if (!props.info.Price) {
         return <React.Fragment>
 
         </React.Fragment>

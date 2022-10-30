@@ -12,7 +12,7 @@ const required = value => {
 
 export default function DriverJourney(props) {
     
-    if (props.info === undefined) {
+    if (props.info.Phone === "" && props.info.Fullname === "" && props.info.Car_code === "") {
         return null;
     }
     return (
@@ -29,7 +29,7 @@ export default function DriverJourney(props) {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="username">SDT:</label>
+                        <label htmlFor="username">Phone:</label>
                         <input
                             type="text"
                             className="form-control"

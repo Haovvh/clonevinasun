@@ -8,7 +8,10 @@ export default function UserInfo(props) {
     }
     return (
         <React.Fragment>
-            <div className="container">
+            {props.show ? 
+            null : 
+            (<div>
+                <div className="container">
                 <div className="col-md-12">
                     <div className="form-group">
                         <label htmlFor="name">Họ và tên: </label>   
@@ -69,6 +72,8 @@ export default function UserInfo(props) {
                     </table>
                 </div>
             </div>
+            </div>)}
+            
         </React.Fragment>
     );
 }

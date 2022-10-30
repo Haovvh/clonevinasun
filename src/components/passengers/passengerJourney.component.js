@@ -19,62 +19,83 @@ const required = value => {
     }
   };
 
-
-
-
 export default function PassengerJourney (props) {
+
+    const [message, setMessage] = useState("");
+    const [journey, setJourney] = useState({
+        origin_Id: "",
+        origin_Fulladdress: "",
+        origin_LAT: "",
+        origin_LNG: "",
+        destination_Id: "",
+        destination_Fulladdress: "",
+        destination_LAT: "",
+        destination_LNG: "",
+        pointCodes: ""
+    })
 
     const [status, setStatus] = useState("showtripinfo")
     const [places, setPlaces] = useState([])
     const [distance_km, setDistance_km] = useState();
     const [distance, setDistance] = useState("")
     const [duration, setDuration] = useState("")
-    const [placeFrom, setPlaceFrom] = useState("");
-    const [origin_Id, setOrigin_Id] = useState("");
-    const [placeFrom_lat, setPlaceFrom_lat] = useState(0);
-    const [placeFrom_lng, setPlaceFrom_lng] = useState(0);
-    const [placeTo, setPlaceTo] = useState("");
-    const [destination_Id, setDestination_Id] = useState("");
-    const [placeTo_lat, setPlaceTo_lat] = useState(0);
-    const [placeTo_lng, setPlaceTo_lng] = useState(0);
-    const [pointCodes, setPointCodes] = useState("")
-    const [coordinates, setCoordinates]= useState([])
     const [disabled, setDisabled] = useState(false);
-    const [driverJouney, setDriverJourney] = useState();
+    const [driverInfo, setDriverInfo] = useState({
+        Fullname: "",
+        Phone: "",
+        Car_type: "",
+        Car_code: "",
+        Car_seat: "",
+        Car_color: ""
+    });
+
+    socket.on("driverinfo", (data) => {
+        console.log(data)
+        setDriverInfo({
+            Fullname: data.Fullname,
+            Phone: data.Phone,
+            Car_type: data.Car_type,
+            Car_code: data.Car_code,
+            Car_seat: data.Car_seat,
+            Car_color: data.Car_color
+        })
+    })
+    
+    socket.on("successpassenger",  (data) => {
+        console.log("success passenger");
+        setStatus("showtripinfo")
+        setJourney({
+            origin_Id: "",
+            origin_Fulladdress: "",
+            origin_LAT: "",
+            origin_LNG: "",
+            destination_Id: "",
+            destination_Fulladdress: "",
+            destination_LAT: "",
+            destination_LNG: "",
+            pointCodes: ""
+        })  
+        
+        setDistance_km();
+        setDistance("")
+        setDuration("")
+        setDisabled(false);
+        setDriverInfo({
+            Fullname: "",
+            Phone: "",
+            Car_type: "",
+            Car_code: "",
+            Car_seat: "",
+            Car_color: ""
+        });
+    
+      })
     
         // mở nhận socket tên broadcat
-         socket.on("driveracceptjourney",  (data) => {
-          console.log("driveracceptjourney");
-          console.log(data)
-          console.log(data.socket_ID)
-            /*
-          for(let i =0 ; i< driver.length; i++) {
-            console.log("co khach")
-            if(driver_ID === driver[i].Driver_ID){
-              setSocket_ID(data.socket_ID)
-              setStatus("Cokhach");
-              setCustomerInfo({
-                Passenger_ID: data.user.Passenger_ID,
-                User_ID: data.user.User_ID,
-                Fullname: data.user.Fullname,
-                Phone: data.user.Phone,
-                origin_Id: data.user.origin.placeId,
-                origin_Fulladdress: data.user.origin.fulladdress,
-                destination_Id: data.user.destination.placeId,
-                destination_Fulladdress: data.user.destination.fulladdress, 
-                distance_km: data.user.distance_km,
-                Price: data.user.Price,
-                pointCode: data.user.pointCode
-              })
-            }
-          }
-          */
-        })
+        
 
     useEffect( () => {
-        socket.on("passenger", (data) => {
-            console.log(data)
-        })
+        
         console.log("check api get all Journey")
         journeyService.getAllJourneybyPassenger().then(
             response => {
@@ -82,6 +103,8 @@ export default function PassengerJourney (props) {
                     console.log(response.data.data)
                     setPlaces(response.data.data)
                     
+                } else {
+
                 }
             }, error => {
                 const resMessage =
@@ -89,8 +112,11 @@ export default function PassengerJourney (props) {
                     error.response.data &&
                     error.response.data.message) ||
                   error.message ||
-                  error.toString();
-                    console.log(error)                    
+                  error.toString();  
+                  setMessage(resMessage)   
+                  localStorage.removeItem("user")
+                  alert("Vui lòng đăng nhập lại")
+                  window.location.assign("http://localhost:8082/login")               
                 }
         )
         
@@ -99,21 +125,29 @@ export default function PassengerJourney (props) {
         journeyService.getJourneybyPassenger().then(
           response => {
             if(response.data.resp) {
+                setMessage(response.data.message)
               console.log("Có Data")
               const user = response.data.data;
               console.log(user)
-              setDriverJourney({
-                    Fullname: user.FullName,
+              setDriverInfo({
+                Fullname: user.FullName,
                     Phone: user.Phone,
                     Car_code: user.Car_code,
+                    Car_seat: user.Car_seat,
                     Car_color: user.Car_color,
                     Car_type: user.Car_type
               })
-              setPlaceFrom(user.origin_Fulladdress)
-              setPlaceTo(user.destination_Fulladdress)
-              setPointCodes(user.pointCode)
+              setJourney(prevState => ({
+                ...prevState,
+                origin_Fulladdress: user.origin_Fulladdress,
+                destination_Fulladdress: user.destination_Fulladdress,
+                pointCodes: user.pointCode
+              }))
+              
               setStatus("completeTrip")
               setDisabled(true)
+            } else {
+                setMessage(response.data.message)
             }
                    
           },
@@ -123,49 +157,65 @@ export default function PassengerJourney (props) {
                 error.response.data &&
                 error.response.data.message) ||
               error.message ||
-              error.toString();
-                console.log(error)                    
+              error.toString(error.response.data.message);
+            setMessage(resMessage) 
+            localStorage.removeItem("user")
+            alert("Vui lòng đăng nhập lại")
+            window.location.assign("http://localhost:8082/login")                    
             }
         )
     },[])
 
     //lấy giá trị trong textbox 
-    const handlePlaceFrom = (event) => {        
-        setPlaceFrom(event.target.value)
+    const handlePlaceFrom = (event) => {   
+        setJourney(prevState => ({
+            ...prevState,origin_Fulladdress: event.target.value
+        }))
     }
     const handlePlaceTo = (event) => {
-        setPlaceTo(event.target.value)
+
+        setJourney(prevState => ({
+            ...prevState,destination_Fulladdress: event.target.value
+        }))
     }
     //event click
     const handleOnClick = async () => {
         if(status === "showtripinfo") {
             try {
-                if (placeFrom !== null && placeTo !== null) {
-                    console.log("Khong duoc null")
-                    const origins = await GoongAPI.getGeocode(placeFrom);
-                    setOrigin_Id(origins.data.results[0].place_id)
-                    
+                if (journey.origin_Fulladdress !== null && journey.destination_Fulladdress !== null) {
+                    console.log(journey.origin_Fulladdress + " Test " + journey.destination_Fulladdress)
+                    const origins = await GoongAPI.getGeocode(journey.origin_Fulladdress);
 
-                    setPlaceFrom(origins.data.results[0].formatted_address)                   
-                    setPlaceFrom_lat(await origins.data.results[0].geometry.location.lat)
-                    setPlaceFrom_lng(await origins.data.results[0].geometry.location.lng)
                     const jsonorigins = await origins.data.results[0].geometry.location.lat + ',' + origins.data.results[0].geometry.location.lng
     
-                    const destinations = await GoongAPI.getGeocode(placeTo);
-                    setDestination_Id(destinations.data.results[0].place_id)
-                    setPlaceTo(destinations.data.results[0].formatted_address)
-                    setPlaceTo_lat(await destinations.data.results[0].geometry.location.lat)
-                    setPlaceTo_lng(await destinations.data.results[0].geometry.location.lng)
-                    const jsondestinations = await destinations.data.results[0].geometry.location.lat + ',' + destinations.data.results[0].geometry.location.lng
-    
-                    if (jsonorigins && jsondestinations) {
+                    const destinations = await GoongAPI.getGeocode(journey.destination_Fulladdress);
+                    console.log(destinations.data.results[0].formatted_address)
 
+                    const jsondestinations = await destinations.data.results[0].geometry.location.lat + ',' + destinations.data.results[0].geometry.location.lng
+                    setJourney(prevState => ({
+                        ...prevState,
+                        origin_Id: origins.data.results[0].place_id,
+                        origin_Fulladdress: origins.data.results[0].formatted_address,
+                        origin_LAT: origins.data.results[0].geometry.location.lat,
+                        origin_LNG: origins.data.results[0].geometry.location.lng,
+                        destination_Id: destinations.data.results[0].place_id,
+                        destination_Fulladdress: destinations.data.results[0].formatted_address,
+                        destination_LAT: destinations.data.results[0].geometry.location.lat,
+                        destination_LNG: destinations.data.results[0].geometry.location.lng
+                    }))
+                    if (jsonorigins && jsondestinations) {
+                        console.log(" jsonorigins && jsondestinations ")
                         const distance = await GoongAPI.getDirection(jsonorigins,jsondestinations);                        
                         const json = await distance.data.routes[0]                        
                         console.log(json.legs[0].distance.text)
                         console.log(json.legs[0].duration.text)
                         console.log(json.overview_polyline.points);
-                        setPointCodes(json.overview_polyline.points)
+                        
+                        setJourney(prevState => ({
+                            ...prevState,
+                            pointCodes: json.overview_polyline.points
+                        }))
+                        
                         
                         setDistance("Quảng đường: " + json.legs[0].distance.text)
                         setDistance_km(parseInt(json.legs[0].distance.value)/1000)
@@ -192,19 +242,19 @@ export default function PassengerJourney (props) {
                 //data gửi kèm đến server
                 Passenger_ID: authHeader().id,
                 origin: {
-                    placeId: origin_Id,
-                    fulladdress: placeFrom,
-                    origin_lat: placeFrom_lat,
-                    origin_lng: placeFrom_lng
+                    placeId: journey.origin_Id,
+                    fulladdress: journey.origin_Fulladdress,
+                    origin_lat: journey.origin_LAT,
+                    origin_lng: journey.origin_LNG
                 },
                 destination: {
-                    placeId: destination_Id,
-                    fulladdress: placeTo,
-                    destination_lat: placeTo_lat,
-                    destination_lng: placeTo_lng
+                    placeId: journey.destination_Id,
+                    fulladdress: journey.destination_Fulladdress,
+                    destination_lat: journey.destination_LAT,
+                    destination_lng: journey.destination_LNG
                 },
                 distance_km: distance_km,
-                pointCode: pointCodes,
+                pointCode: journey.pointCodes,
                 Price: distance_km * 10000,
                 Fullname: "Tran van A",
                 Phone: "0987654321"
@@ -216,13 +266,20 @@ export default function PassengerJourney (props) {
         }
         else if (status === "completeTrip") {
             console.log("completeTrip");
+            setJourney({
+                origin_Id: "",
+                origin_Fulladdress: "",
+                origin_LAT: "",
+                origin_LNG: "",
+                destination_Id: "",
+                destination_Fulladdress: "",
+                destination_LAT: "",
+                destination_LNG: "",
+                pointCodes: ""
+            })
             setDistance_km();
             setDistance("");
             setDuration("")
-            setPlaceFrom("");
-            setPlaceTo("");
-            setPointCodes("");
-            setCoordinates([]);
             setStatus("showtripinfo");
             setDisabled(false)
         }        
@@ -248,7 +305,7 @@ export default function PassengerJourney (props) {
                             placeholder="Điểm đón"
                             type="text"
                             className="form-control"
-                            value={placeFrom}
+                            value={journey.origin_Fulladdress}
                             onChange={(event) => { handlePlaceFrom(event) }}
                             disabled={disabled}
                         />
@@ -264,7 +321,7 @@ export default function PassengerJourney (props) {
                             placeholder="Điểm đến"
                             type="text"
                             className="form-control"
-                            value={placeTo}
+                            value={journey.destination_Fulladdress}
                             onChange={(event) => { handlePlaceTo(event) }}
                             disabled={disabled}
                         />
@@ -300,10 +357,17 @@ export default function PassengerJourney (props) {
                 </div>
 
             </div>
+            {message && (
+              <div className="form-group">
+                <div className="alert alert-danger" role="alert">
+                  {message}
+                </div>
+              </div>
+            )}
             <div>
-                <DriverJourney info ={driverJouney}/>
+                <DriverJourney info ={driverInfo}/>
             </div>
-            <GoongMap coordinates={coordinates} />
+            <GoongMap coordinates={journey.pointCodes} />
         </React.Fragment>
     );
 }

@@ -25,7 +25,6 @@ export default function ProfileDriver (props) {
   const [Car_seat, setCar_seat] = useState();
   const [Car_color, setCar_color] = useState();
   const [statusCode, setStatusCode] = useState(false);  
-  const [driver, setDriver] = useState()
   const [message, setMessage] = useState("");
 
   useEffect( () => {

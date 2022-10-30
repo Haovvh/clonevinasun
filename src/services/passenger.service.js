@@ -12,6 +12,12 @@ class Passenger {
     return axios.get(process.env.REACT_APP_API_URL + "/user/get-user", 
     { headers: authHeader() });
   }
+  putUserToSupportStaff(SupportStaffCode) {
+    return axios.put(process.env.REACT_APP_API_URL + "/user/put-user-supportstaff", {
+      SupportStaffCode
+    },
+    { headers: authHeader() });
+  }
 
   putPassenger(Fullname, Phone, Date_of_birth) {
     return axios.put(process.env.REACT_APP_API_URL + "/user/put-user", {

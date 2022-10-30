@@ -26,7 +26,7 @@ export default function ProfilePassenger (props) {
   const [Car_code, setCar_code] = useState("");
   const [Car_seat, setCar_seat] = useState("");
   const [Car_color, setCar_color] = useState("");
-
+  const [SupportStaffCode, setSupportStaffCode] = useState("");
   const [message, setMessage] = useState("");
 
   useEffect( () => {
@@ -83,9 +83,9 @@ export default function ProfilePassenger (props) {
               console.log("Có Data")
               console.log(response.data) 
               setMessage(response.data.message)   
-              alert("Cập nhật thành công");
-              authService.logout();  
-              window.location.reload();
+              localStorage.removeItem("user")
+              alert("Vui lòng đăng nhập lại")
+              window.location.assign("http://localhost:8082/login")
             }
             else {
               setMessage(response.data.message)    
@@ -138,6 +138,26 @@ export default function ProfilePassenger (props) {
           }
     }
   }
+  const handleSupportStaff = () => {
+    passengerService.putUserToSupportStaff(SupportStaffCode).then(
+      response => {
+        if(response.data.resp) {
+          console.log(response.data.resp)
+          setMessage(response.data.message)
+          localStorage.removeItem("user")
+              alert("Vui lòng đăng nhập lại")
+              window.location.assign("http://localhost:8082/login")
+        }
+        else {
+          console.log("False")
+          setMessage(response.data.message)
+        }
+        
+      }, error => {
+        console.log(error)
+      }
+    )
+  }
   const  handleIsDriver = () => {
     if (statusCode === "isPassenger"){
       setStatusCode("isDriver");
@@ -150,6 +170,35 @@ export default function ProfilePassenger (props) {
   return (
     <React.Fragment>
       <div className="col-md-12">
+        <div>
+        {message && (
+              <div className="form-group">
+                <div
+                  className={
+                    statusCode
+                      ? "alert alert-success"
+                      : "alert alert-danger"
+                  }
+                  role="alert"
+                >
+                {message}
+                </div>
+              </div>
+            )}
+        <div>
+              <label htmlFor="username">Nhập mã:</label>
+                    <input
+                            type="text"
+                            className="form-control"
+                            value={SupportStaffCode}
+                            onChange={(event) => setSupportStaffCode(event.target.value)}
+                            validations={[required]}
+                        />
+                    </div>
+          <button onClick={() => handleSupportStaff()}>
+            Trở Thành SupportStaff
+          </button>
+        </div>
 
       {(statusCode === "isPassenger") && (
               <div className="form-group">
@@ -277,20 +326,7 @@ export default function ProfilePassenger (props) {
                         </div>
                     </div>
                          
-                    {message && (
-              <div className="form-group">
-                <div
-                  className={
-                    statusCode
-                      ? "alert alert-success"
-                      : "alert alert-danger"
-                  }
-                  role="alert"
-                >
-                {message}
-                </div>
-              </div>
-            )}     
+                         
         </div>
         </div>
       </div>

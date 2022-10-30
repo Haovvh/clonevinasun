@@ -61,7 +61,7 @@ export default function GongMapDriver(props) {
   return (
     <React.Fragment>
 
-    {!props.Online ? (<h1>Bạn đang Offline</h1>) :
+    {props.Online === 'Offline' ? (<h1>Bạn đang Offline</h1>) :
     (<ReactMapGL className='container'
       {...viewport}
       width="60vw"

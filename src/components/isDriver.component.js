@@ -18,12 +18,10 @@ const required = value => {
   }
 };
 
-export default function IsDriver (){  
+export default function IsDriver (props){  
   const driver_ID = authHeader().id;
   const user = AuthService.getCurrentUser();
   const isDriver = user.role.includes('ROLE_DRIVER')
-  
-  const [isOnline, setIsOnline] = useState("Online")
   const [status, setStatus] = useState("Offline")
   const [customerInfo, setCustomerInfo] = useState({})
 
@@ -56,7 +54,9 @@ export default function IsDriver (){
             error.response.data.message) ||
           error.message ||
           error.toString();
-            console.log(error)                    
+          localStorage.removeItem("user")
+          alert("Vui lòng đăng nhập lại")
+          window.location.assign("http://localhost:8082/login")                     
         }
     )
     //socket
