@@ -64,9 +64,9 @@ export default function Driver (){
         error.message ||
         error.toString();
         setMessage(resMessage)    
-        localStorage.removeItem("user")
-        alert("Vui lòng đăng nhập lại")
-        window.location.assign("http://localhost:8082/login")     
+        //localStorage.removeItem("user")
+        //alert("Vui lòng đăng nhập lại")
+        //window.location.assign("http://localhost:8082/login")     
         //alert("Vui lòng đăng nhập lại")
         
         
@@ -104,9 +104,9 @@ export default function Driver (){
           error.message ||
           error.toString();
         setMessage(resMessage)    
-        localStorage.removeItem("user")
-        alert("Vui lòng đăng nhập lại")
-        window.location.assign("http://localhost:8082/login")                      
+        //localStorage.removeItem("user")
+        //alert("Vui lòng đăng nhập lại")
+        //window.location.assign("http://localhost:8082/login")                      
         }
     )
     //socket

@@ -145,8 +145,8 @@ export default function ProfilePassenger (props) {
           console.log(response.data.resp)
           setMessage(response.data.message)
           localStorage.removeItem("user")
-              alert("Vui lòng đăng nhập lại")
-              window.location.assign("http://localhost:8082/login")
+          alert("Vui lòng đăng nhập lại")
+          window.location.assign("http://localhost:8082/login")
         }
         else {
           console.log("False")
