@@ -37,6 +37,7 @@ export default function GongMapDriver(props) {
   useEffect (()=>{
       var delay = 10000;
       if (!props.Online) {
+        //Xóa dữ liệu driver trong DB ra
           delay = 600000000
       } else {
         delay = 10000
@@ -61,7 +62,7 @@ export default function GongMapDriver(props) {
   return (
     <React.Fragment>
 
-    {props.Online === 'Offline' ? (<h1>Bạn đang Offline</h1>) :
+    {!props.Online ? (<h1>Bạn đang Offline</h1>) :
     (<ReactMapGL className='container'
       {...viewport}
       width="60vw"

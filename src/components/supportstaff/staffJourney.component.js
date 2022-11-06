@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import GoongAPI from "../../Goong/GoongAPI";
 import socketIOClient from "socket.io-client";
-import authHeader from "../../services/auth-header";
-import journeyService from "../../services/journey.service";
 import DriverJourney from "../passengers/driverJourney.component";
 import passengerService from "../../services/passenger.service";
 
@@ -22,6 +20,7 @@ const required = value => {
 
 export default function StaffJourney (props) {
     
+    const [Car_seat,setCar_seat] = useState();
     const [message, setMessage] = useState("");
     const [journey, setJourney] = useState({
         origin_Id: "",
@@ -41,7 +40,6 @@ export default function StaffJourney (props) {
     });
 
     const [status, setStatus] = useState("showtripinfo")
-    const [places, setPlaces] = useState([])
     const [distance_km, setDistance_km] = useState();
     const [distance, setDistance] = useState("")
     const [duration, setDuration] = useState("")
@@ -58,16 +56,13 @@ export default function StaffJourney (props) {
     useEffect( ()=> {
         passengerService.getPassenger().then(
             response => {
-                console.log(response)
                 if(response.data.resp) {
-                    console.log(response.data.data.Passenger_ID)
                     setInfo(prevState => ({
                         ...prevState,
                         SupportStaff_ID: response.data.data.Passenger_ID,
                         Fullname: response.data.data.Fullname,
                         Phone: response.data.data.Phone
                     }))
-                    setMessage(response.data.message)
                 }
                 else {
                     setMessage(response.data.message)
@@ -93,7 +88,6 @@ export default function StaffJourney (props) {
     
     socket.on("successpassenger",  (data) => {
         console.log("success passenger");
-        setPlaces([])
         setDistance_km()
         setDistance("")
         setDuration("")
@@ -120,6 +114,14 @@ export default function StaffJourney (props) {
             destination_LNG: "",
             pointCodes: ""
         })  
+        setMessage("");
+    
+        setInfo({
+            SupportStaff_ID: "",
+            Phone: "",
+            Fullname: ""
+        });
+        setDisabled(false);    
       })
     
         // mở nhận socket tên broadcat
@@ -295,16 +297,19 @@ export default function StaffJourney (props) {
                             </datalist>
                         </div>
                         <div className="form-group">
-                            <select id="cars" name="cars">
-                                <option value="car4">Car 4 Chỗ</option>
-                                <option value="car7">Car 7 Chỗ</option>
-                                <option value="car7">Bất kỳ</option>
-                            </select>
+                        <label htmlFor="username">Car Seat:</label>
+                        <select className="form-control" value={Car_seat} onChange={(event) => {       
+                              setCar_seat(event.target.value)
+                            }}>
+                            <option value="4">Car 4 chỗ</option>
+                            <option value="7">Car 7 chỗ</option>
+                            <option value="">Car 7 chỗ</option>
+                        </select> 
                         </div>
                         <div className="form-group ">
                             <div className="row">
                                 <div className="col-5 container">
-                                    <button className="btn btn-primary " onClick={() => {
+                                    <button  onClick={() => {
                                     handleOnClick()}}>
                                     {(status === "showtripinfo") ? "Show Trip Info" : 
                                     (status === "bookdriver") ? "Book Driver" : 
@@ -313,13 +318,12 @@ export default function StaffJourney (props) {
                                     </button>
                                 </div>
                                 <div className="col-5 container">
-                                    <button className="btn btn-primary " onClick={() => {
+                                    <button  onClick={() => {
                                     window.location.reload();}}>Cancel</button>
                                 </div>
                             </div>
                         </div>
-                    </div>
-    
+                    </div>    
                 </div>
                 {message && (
               <div className="form-group">
@@ -332,8 +336,7 @@ export default function StaffJourney (props) {
                     <DriverJourney info ={driverInfo}/>
                 </div>
                 </div>
-            )}
-            
+            )}          
             
         </React.Fragment>
     );

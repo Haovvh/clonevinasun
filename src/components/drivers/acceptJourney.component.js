@@ -1,18 +1,9 @@
 import React from "react";
 
-const required = value => {
-    if (!value) {
-      return (
-        <div className="alert alert-danger" role="alert">
-          This field is required!
-        </div>
-      );
-    }
-  };
   
 export default function AcceptJourney(props) {
     
-    if (!props.info.Price) {
+    if (!props.info.origin_Fulladdress) {
         return <React.Fragment>
 
         </React.Fragment>

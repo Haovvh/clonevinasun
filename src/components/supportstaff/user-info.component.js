@@ -3,12 +3,12 @@ import "../../css/table.css"
 
 export default function UserInfo(props) {
 
-    if (!(props.places.length > 0)) {
+    if ((props.Fullname === "")) {
         return null;
     }
     return (
         <React.Fragment>
-            {props.show ? 
+            {!props.show ? 
             null : 
             (<div>
                 <div className="container">
@@ -33,8 +33,8 @@ export default function UserInfo(props) {
                         <tbody>
                             <tr>
                                 <th>Thời Gian:</th>
-                                <th>Địa điểm đến:</th>
-                                <th>Địa điểm đi:</th>
+                                <th>Địa điểm đến gần nhất:</th>
+                                <th>Địa điểm đi gần nhất:</th>
                             </tr>
                             {props.places.map((val, key) => {
                                 return (

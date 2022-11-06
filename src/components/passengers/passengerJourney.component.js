@@ -9,6 +9,7 @@ import DriverJourney from "./driverJourney.component"
 const param = { query: 'token=' }
 const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
 
+
 const required = value => {
     if (!value) {
       return (
@@ -19,7 +20,7 @@ const required = value => {
     }
   };
 
-export default function PassengerJourney (props) {
+export default function PassengerJourney (props) {    
 
     const [message, setMessage] = useState("");
     const [journey, setJourney] = useState({
@@ -48,6 +49,8 @@ export default function PassengerJourney (props) {
         Car_seat: "",
         Car_color: ""
     });
+
+    //socket
 
     socket.on("driverinfo", (data) => {
         console.log(data)
@@ -87,15 +90,12 @@ export default function PassengerJourney (props) {
             Car_code: "",
             Car_seat: "",
             Car_color: ""
-        });
-    
+        });    
       })
-    
-        // mở nhận socket tên broadcat
-        
 
     useEffect( () => {
-        
+        socket.id = props.InfoPassenger.Passenger_ID;
+        //Lấy địa điểm đi thường xuyên
         console.log("check api get all Journey")
         journeyService.getAllJourneybyPassenger().then(
             response => {
@@ -112,7 +112,7 @@ export default function PassengerJourney (props) {
                     error.response.data &&
                     error.response.data.message) ||
                   error.message ||
-                  error.toString();  
+                  error.toString();
                   setMessage(resMessage)   
                   //localStorage.removeItem("user")
                   //alert("Vui lòng đăng nhập lại")
@@ -147,7 +147,7 @@ export default function PassengerJourney (props) {
               setStatus("completeTrip")
               setDisabled(true)
             } else {
-                setMessage(response.data.message)
+                
             }
                    
           },
@@ -158,10 +158,7 @@ export default function PassengerJourney (props) {
                 error.response.data.message) ||
               error.message ||
               error.toString(error.response.data.message);
-            setMessage(resMessage) 
-            //localStorage.removeItem("user")
-            //alert("Vui lòng đăng nhập lại")
-            //window.location.assign("http://localhost:8082/login")                    
+            setMessage(resMessage)                 
             }
         )
     },[])
@@ -182,7 +179,8 @@ export default function PassengerJourney (props) {
     const handleOnClick = async () => {
         if(status === "showtripinfo") {
             try {
-                if (journey.origin_Fulladdress !== null && journey.destination_Fulladdress !== null) {
+                if (journey.origin_Fulladdress  && journey.destination_Fulladdress ) {
+                    console.log("Khong duoc null");
                     console.log(journey.origin_Fulladdress + " Test " + journey.destination_Fulladdress)
                     const origins = await GoongAPI.getGeocode(journey.origin_Fulladdress);
 
@@ -238,6 +236,8 @@ export default function PassengerJourney (props) {
 
             //socket gọi đến server tìm tài xế
             socket.emit("calldriver", {
+                
+                
                 socket_ID: socket.id,
                 //data gửi kèm đến server
                 Passenger_ID: authHeader().id,
@@ -256,8 +256,8 @@ export default function PassengerJourney (props) {
                 distance_km: distance_km,
                 pointCode: journey.pointCodes,
                 Price: distance_km * 10000,
-                Fullname: "Tran van A",
-                Phone: "0987654321"
+                Fullname: props.InfoPassenger.Fullname,
+                Phone: props.InfoPassenger.Phone
 
             });
             
@@ -340,7 +340,7 @@ export default function PassengerJourney (props) {
                     <div className="form-group ">
                         <div className="row">
                             <div className="col-5 container">
-                                <button className="btn btn-primary " onClick={() => {
+                                <button  onClick={() => {
                                 handleOnClick()}}>
                                 {(status === "showtripinfo") ? "Show Trip Info" : 
                                 (status === "bookdriver") ? "Book Driver" : 
@@ -349,7 +349,7 @@ export default function PassengerJourney (props) {
                                 </button>
                             </div>
                             <div className="col-5 container">
-                                <button className="btn btn-primary " onClick={() => {
+                                <button  onClick={() => {
                                 window.location.reload();}}>Cancel</button>
                             </div>
                         </div>

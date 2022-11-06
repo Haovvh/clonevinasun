@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-
 import AuthService from "./services/auth.service";
 
 import Login from "./components/login.component";
@@ -12,6 +11,7 @@ import Profile from "./components/profile.component";
 import Passenger from "./components/passengers/passengers.component";
 import Driver from "./components/drivers/driver.component";
 import SupportStaff from "./components/supportstaff/supportstaff.component";
+import NewUser from "./components/newuser/newuser.component";
 // import AuthVerify from "./common/auth-verify";
 import EventBus from "./common/EventBus";
 
@@ -71,15 +71,7 @@ class App extends Component {
             GoCarVietNam
           </Link>
           <div className="navbar-nav mr-auto">
-            { currentUser && (
-              <li className="nav-item">
-              <Link to={"/home"} className="nav-link">
-                Home
-              </Link>
-            </li>
-            )              
-            }        
-
+            
             { currentUser && showDriver  && (
               <li className="nav-item">
                 <Link to={"/driver"} className="nav-link">
@@ -92,6 +84,13 @@ class App extends Component {
               <li className="nav-item">
                 <Link to={"/supportstaff"} className="nav-link">
                   Support Staff
+                </Link>
+              </li>
+            )}
+            { currentUser && showSupportStaff  && (
+              <li className="nav-item">
+                <Link to={"/newuser"} className="nav-link">
+                  Thêm mới người dùng
                 </Link>
               </li>
             )}
@@ -138,13 +137,13 @@ class App extends Component {
         <div className="container mt-3">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/home" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/passenger" element={<Passenger />} />
             <Route path="/driver" element={<Driver/>} />
             <Route path="/supportstaff" element={<SupportStaff />} />
+            <Route path="/newuser" element={<NewUser />} />
           </Routes>
         </div>
 

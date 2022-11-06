@@ -37,6 +37,7 @@ export default function ProfileDriver (props) {
           const user = response.data.data;                    
           setFullname(user.Fullname)
           setPhone(user.Phone)
+          console.log(user.Date_of_birth)
           setDate_of_birth(user.Date_of_birth) 
           setCar_code(user.Car_code)    
           setCar_color(user.Car_color)
@@ -74,11 +75,11 @@ export default function ProfileDriver (props) {
     console.log(Fullname + " " + Phone + " " + Date_of_birth)
     if(Fullname !== "" && Phone !== "" && Date_of_birth !== "") {
       console.log("Khong duoc rong")
-      passengerService.putPassenger(Fullname, Phone, Date_of_birth).then(
+      passengerService.putPassenger( Fullname, Phone, Date_of_birth).then(
         response => {
           if(response.data.resp) {
             console.log("Response True")
-            console.log(response.data) 
+            
             setMessage(response.data.message)    
             setStatusCode(true);         
           }
@@ -91,14 +92,12 @@ export default function ProfileDriver (props) {
         },
         error => {
           console.log("Error")
-          console.log(error)
           const resMessage =
             (error.response &&
               error.response.data &&
               error.response.data.message) ||
             error.message ||
-            error.toString();
-              console.log(error)                    
+            error.toString();                    
           })
       }
     }    
@@ -142,6 +141,7 @@ export default function ProfileDriver (props) {
                     <div className="form-group">
                         <label htmlFor="username">Car Owner:</label>
                         <input
+                            disabled ={true}
                             type="text"
                             className="form-control"
                             value={Car_owner}
@@ -153,6 +153,7 @@ export default function ProfileDriver (props) {
                     <div className="form-group">
                         <label htmlFor="username">Car Type:</label>
                         <input
+                            disabled
                             type="text"
                             className="form-control"
                             value={Car_type}
@@ -164,6 +165,7 @@ export default function ProfileDriver (props) {
                     <div className="form-group">
                         <label htmlFor="username">Car Code:</label>
                         <input
+                        disabled
                             type="text"
                             className="form-control"
                             value={Car_code}
@@ -173,19 +175,19 @@ export default function ProfileDriver (props) {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="username">Car Seat:</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={Car_seat}
-                            onChange={(event) => {        
+                    <label htmlFor="username">Car Seat:</label>
+                        <select className="form-control" disabled={true} value={Car_seat} onChange={(event) => { 
+                          console.log(event.target.value)       
                               setCar_seat(event.target.value)
-                            }}
-                        />
+                            }}>
+                            <option value="4">Car 4 chỗ</option>
+                            <option value="7">Car 7 chỗ</option>
+                        </select>                        
                     </div>
                     <div className="form-group">
                         <label htmlFor="username">Car Color:</label>
                         <input
+                        disabled
                             type="text"
                             className="form-control"
                             value={Car_color}

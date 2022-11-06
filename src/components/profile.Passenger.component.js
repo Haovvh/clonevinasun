@@ -15,11 +15,18 @@ const required = value => {
   }
 };
 
+
 export default function ProfilePassenger (props) {  
+
+  const [InfoPassenger, setInfoPassenger] = useState({
+    Date_of_birth: "",
+    Fullname: "",
+    Passenger_ID: "",
+    Phone: "",
+    role: ""
+   
+  })
   const user = AuthService.getCurrentUser();
-  const [Fullname, setFullname] = useState("");
-  const [Phone, setPhone] = useState("");
-  const [Date_of_birth, setDate_of_birth] = useState("");
   const [statusCode, setStatusCode] = useState("noPassenger");  
   const [Car_type, setCar_type] = useState("");
   const [Car_owner, setCar_owner] = useState("");
@@ -29,44 +36,37 @@ export default function ProfilePassenger (props) {
   const [SupportStaffCode, setSupportStaffCode] = useState("");
   const [message, setMessage] = useState("");
 
+
   useEffect( () => {
-    console.log(user)
-    console.log("use Effect")
     passengerService.getPassenger().then(
       response => {
-        if(response.data.resp  ) {
-          console.log("Có Data")
-          const passenger = response.data.data;
-          console.log(passenger)
-          if(response.data.data.Phone !== null) {
-            setStatusCode("isPassenger") 
-          }          
-          setFullname(passenger.Fullname)
-          setPhone(passenger.Phone)
-          setDate_of_birth(passenger.Date_of_birth)                           
-        }               
-      },
-      error => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-            console.log(error)                    
+        if(response.data.resp) {
+          console.log(response.data.data);
+          setInfoPassenger(response.data.data)
+        } else {
+          console.log(response.status);
+          setMessage(response.data.message)
         }
+      }, error => {
+        console.log(error)
+
+        const resMessage =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+        setMessage(resMessage)
+        localStorage.removeItem("user");
+        alert("Vui lòng đăng nhập lại");
+        window.location.assign("http://localhost:8082/login")
+      }
     )
+    
   },[])
 
-    const handleFullname = (event) => {        
-      setFullname(event.target.value)
-    }
-    const handlePhone = (event) => {
-      setPhone(event.target.value)
-    }
-    const handleDateofBirth = (event) => {
-      setDate_of_birth(event.target.value)
-    }
+    
+
   // gọi API trở thành tài xế
   
   const handleOnClick = () => {
@@ -84,7 +84,8 @@ export default function ProfilePassenger (props) {
               console.log(response.data) 
               setMessage(response.data.message)   
               localStorage.removeItem("user")
-              alert("Vui lòng đăng nhập lại")
+              alert(`Cập nhật thông tin thành công.
+              Vui lòng đăng nhập lại để sử dụng chức năng`)
               window.location.assign("http://localhost:8082/login")
             }
             else {
@@ -107,9 +108,9 @@ export default function ProfilePassenger (props) {
     }
     else {
 
-      if(Fullname !== null && Phone !== null && Date_of_birth !== null) {
+      if(InfoPassenger) {
         console.log("Khong duoc rong")
-        passengerService.putPassenger(Fullname, Phone, Date_of_birth).then(
+        passengerService.putPassenger(InfoPassenger).then(
           response => {
             if(response.data.resp) {
               console.log("Response True")
@@ -145,7 +146,7 @@ export default function ProfilePassenger (props) {
           console.log(response.data.resp)
           setMessage(response.data.message)
           localStorage.removeItem("user")
-          alert("Vui lòng đăng nhập lại")
+          alert("Cập nhật thông tin thành công. Vui lòng đăng nhập lại")
           window.location.assign("http://localhost:8082/login")
         }
         else {
@@ -159,9 +160,10 @@ export default function ProfilePassenger (props) {
     )
   }
   const  handleIsDriver = () => {
-    if (statusCode === "isPassenger"){
-      setStatusCode("isDriver");
-    }      
+    setStatusCode("isDriver");
+    // if (statusCode === "isPassenger"){
+    //   setStatusCode("isDriver");
+    // }      
   }    
 
     if (!user) {
@@ -200,7 +202,7 @@ export default function ProfilePassenger (props) {
           </button>
         </div>
 
-      {(statusCode === "isPassenger") && (
+      {InfoPassenger.Phone && (
               <div className="form-group">
                 <button className="btn btn-primary " onClick={() => {
                                 handleIsDriver()}}>
@@ -218,8 +220,8 @@ export default function ProfilePassenger (props) {
                     <input
                             type="text"
                             className="form-control"
-                            value={Fullname}
-                            onChange={(event) => { handleFullname(event) }}
+                            value={InfoPassenger.Fullname}
+                            onChange={(event) => setInfoPassenger(prevState => ({...prevState, Fullname: event.target.value}))}
                             validations={[required]}
                         />
                     </div>
@@ -228,8 +230,8 @@ export default function ProfilePassenger (props) {
                         <input
                             type="text"
                             className="form-control"
-                            value={Phone}
-                            onChange={(event) => { handlePhone(event) }}
+                            value={InfoPassenger.Phone}
+                            onChange={(event) => setInfoPassenger(prevState => ({...prevState, Phone: event.target.value}))}
                             validations={[required]}
                         />
                     </div>
@@ -238,8 +240,8 @@ export default function ProfilePassenger (props) {
                         <input
                             type="date"
                             className="form-control"
-                            value={Date_of_birth}
-                            onChange={(event) => { handleDateofBirth(event) }}
+                            value={InfoPassenger.Date_of_birth}
+                            onChange={(event) => setInfoPassenger(prevState => ({...prevState, Date_of_birth: event.target.value}))}
                             validations={[required]}
                         />
                         </div>
@@ -286,16 +288,16 @@ export default function ProfilePassenger (props) {
                         />
                     </div>
                     <div className="form-group">
+                      
                         <label htmlFor="username">Car Seat:</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={Car_seat}
-                            onChange={(event) => {        
+                        <select className="form-control" value={Car_seat} onChange={(event) => { 
+                          console.log(event.target.value)       
                               setCar_seat(event.target.value)
-                            }}
-                            validations={[required]}
-                        />
+                            }}>
+                            <option value="4">Car 4 chỗ</option>
+                            <option value="7">Car 7 chỗ</option>
+                        </select>
+                        
                     </div>
                     <div className="form-group">
                         <label htmlFor="username">Car Color:</label>
@@ -324,8 +326,7 @@ export default function ProfilePassenger (props) {
                                 window.location.reload();}}>Cancel</button>
                             </div>
                         </div>
-                    </div>
-                         
+                    </div>                        
                          
         </div>
         </div>

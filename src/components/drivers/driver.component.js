@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect} from "react";
 import GongMapDriver from "../../Goong/GoongMap.Driver";
-import AuthService from "../../services/auth.service";
 import authHeader from "../../services/auth-header";
 import AcceptJourney from "./acceptJourney.component"
 import socketIOClient from "socket.io-client";
@@ -10,15 +9,6 @@ import journeyService from "../../services/journey.service";
 const param = { query: 'token=' }
 const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
 
-const required = value => {
-  if (!value) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        This field is required!
-      </div>
-    );
-  }
-};
 
 export default function Driver (){  
 
@@ -26,52 +16,55 @@ export default function Driver (){
   const [driverInfo, setDriverInfo] = useState({
     Driver_ID: "",
     Fullname: "",
+    Phone: "",
     Car_type: "",
     Car_code: "",
     Car_seat: "",
     Car_color: ""
   });
   const driver_ID = authHeader().id;
-  const user = AuthService.getCurrentUser();
-  const isDriver = user.role.includes('ROLE_DRIVER')
-  const [status, setStatus] = useState("Online")
+  const [IsDriver, setIsDriver] = useState(false);
+  const [Online, setOnline] = useState(false);
+  const [status, setStatus] = useState("Offline")
   const [customerInfo, setCustomerInfo] = useState({})
   const [socket_ID, setSocket_ID] = useState("");
 
   useEffect(  () => {  
+    
     driverService.getDriver().then(
       response => {
-
-        console.log( response.status === 200)
         if(response.data.resp) {
-          console.log(response.data.data)
-          setDriverInfo({
+          setIsDriver(true);
+          setDriverInfo(prevState => ({ ...prevState,
             Fullname: response.data.data.Fullname,
+            Phone: response.data.data.Phone,
             Driver_ID: response.data.data.Driver_ID,
             Car_type: response.data.data.Car_type,
             Car_code: response.data.data.Car_code,
             Car_seat: response.data.data.Car_seat,
             Car_color: response.data.data.Car_color
-          })
+          }))
         } else {
+          console.log(response.status);
+          console.log(response.data)
           setMessage(response.data.message)
         }
       }, error => {
+        console.log(error)
+
         const resMessage =
         (error.response &&
           error.response.data &&
           error.response.data.message) ||
         error.message ||
         error.toString();
-        setMessage(resMessage)    
-        //localStorage.removeItem("user")
-        //alert("Vui lòng đăng nhập lại")
-        //window.location.assign("http://localhost:8082/login")     
-        //alert("Vui lòng đăng nhập lại")
-        
-        
+        setMessage(resMessage)
+        localStorage.removeItem("user");
+        alert("Mã đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại");
+        window.location.assign("http://localhost:8082/login")
       }
     )
+    socket.id = driverInfo.Driver_ID;
     //check xem có journey nào chưa hoàn thành không? gọi API journey
     console.log("check api get Journey")
     journeyService.getJourneybyDriver().then(
@@ -90,7 +83,8 @@ export default function Driver (){
                 Price: user.Price,
                 pointCode: user.pointCode 
           }))
-          setStatus("trakhach")
+          setOnline(true);
+          setStatus("Donetrip")
         } else {
 
         }
@@ -103,59 +97,56 @@ export default function Driver (){
             error.response.data.message) ||
           error.message ||
           error.toString();
-        setMessage(resMessage)    
-        //localStorage.removeItem("user")
-        //alert("Vui lòng đăng nhập lại")
-        //window.location.assign("http://localhost:8082/login")                      
+        setMessage(resMessage)                
         }
     )
-    //socket
-    
-        // mở nhận socket tên broadcat
-         socket.on("broadcat",  (data) => {
-          console.log("driver");
-          console.log(data.drivers)
-          let driver = data.drivers;
+  }, [driverInfo.Driver_ID]);
 
-          for(let i =0 ; i< driver.length; i++) {
-            console.log("co khach")
-            console.log(driverInfo.Driver_ID)
-            if(driver_ID === driver[i].Driver_ID){
-              setSocket_ID(data.socket_ID)
-              setStatus("Cokhach");
-              setCustomerInfo(prevState =>  ({
-                ...prevState,
-                Passenger_ID: data.user.Passenger_ID,
-                User_ID: data.user.User_ID,
-                SupportStaff_ID: data.user.SupportStaff_ID,
-                Fullname: data.user.Fullname,
-                Phone: data.user.Phone,
-                origin_Id: data.user.origin.placeId,
-                origin_Fulladdress: data.user.origin.fulladdress,
-                destination_Id: data.user.destination.placeId,
-                destination_Fulladdress: data.user.destination.fulladdress, 
-                distance_km: data.user.distance_km,
-                Price: data.user.Price,
-                pointCode: data.user.pointCode
-              }))
-            }
-          }
-        })    
-    
-  }, []);
+  //Socket
+  socket.on("broadcat",  (data) => {
+    console.log("driver");
+    console.log(data.drivers)
+    let driver = data.drivers;
+
+    for(let i =0 ; i< driver.length; i++) {
+      console.log(driverInfo.Driver_ID)
+      console.log(driver_ID)
+      if(driver_ID === driver[i].Driver_ID){
+        setSocket_ID(data.socket_ID)
+        setStatus("isPassenger");
+        setCustomerInfo(prevState =>  ({
+          ...prevState,
+          Passenger_ID: data.user.Passenger_ID,
+          User_ID: data.user.User_ID,
+          SupportStaff_ID: data.user.SupportStaff_ID,
+          Fullname: data.user.Fullname,
+          Phone: data.user.Phone,
+          origin_Id: data.user.origin.placeId,
+          origin_Fulladdress: data.user.origin.fulladdress,
+          destination_Id: data.user.destination.placeId,
+          destination_Fulladdress: data.user.destination.fulladdress, 
+          distance_km: data.user.distance_km,
+          Price: data.user.Price,
+          pointCode: data.user.pointCode
+        }))
+      }
+    }
+  }) 
 
   
-  const handleOnline = () => {
-   
+  const handleOnline = () => {   
     
     if (status === "Online") {
+      //gọi API đến server
+      setOnline(false)
       setStatus("Offline");
       
 
     } else if (status === "Offline") {
+      setOnline(true)
       setStatus("Online");
 
-    } else if(status === "Cokhach") {
+    } else if(status === "isPassenger") {
       //goi api tạo journey
       console.log(" vao status co khach")
       journeyService.createjourney(customerInfo.Passenger_ID,customerInfo.User_ID, 
@@ -167,18 +158,18 @@ export default function Driver (){
             if(response.data.resp) {
               setMessage(response.data.message)
               console.log(response.data)
+              console.log(driverInfo)
               socket.emit("driveracceptjourney", {
                 socket_ID: socket_ID,
                 Driver_ID: driverInfo.Driver_ID,
+                Phone: driverInfo.Phone,
                 Fullname: driverInfo.Fullname,
                 Car_type: driverInfo.Car_type,
                 Car_code: driverInfo.Car_code,
                 Car_seat: driverInfo.Car_seat,
                 Car_color: driverInfo.Car_color
-
-              })
-                  
-              setStatus("trakhach")
+              })                  
+              setStatus("Donetrip")
             } else {
               setMessage(response.data.message)
               setStatus("Online")
@@ -192,15 +183,11 @@ export default function Driver (){
                 error.response.data.message) ||
               error.message ||
               error.toString();
-            setMessage(resMessage) 
-            localStorage.removeItem("user")
-            alert("Vui lòng đăng nhập lại")
-            window.location.assign("http://localhost:8082/login")                    
+            setMessage(resMessage)                  
             } 
-         )
-      
+         )      
 
-    } else {
+    } else if(status === "Donetrip") {
       //gọi api update journey thành công
       journeyService.updatejourney(driver_ID, customerInfo.SupportStaff_ID).then(
         response => {
@@ -225,20 +212,25 @@ export default function Driver (){
             error.toString();
           setMessage(resMessage)                   
           } 
-      )
-      
-    }
-    
+      )      
+    }    
   }
   
-    if(!isDriver) {
+    if(!IsDriver) {
       return null;
     }
     return (
       <React.Fragment>
-        <div className="container">
+        <div className="card container">
           <header className="jumbotron">
-            <h3>Driver</h3>
+            {driverInfo.Driver_ID && (
+              <div>
+                
+            <h3>Driver: {driverInfo.Fullname}</h3>
+            <h4>Phone: {driverInfo.Phone}</h4>
+            <h4>Car Info: {driverInfo.Car_type} {driverInfo.Car_code}</h4>
+              </div>
+            )}
           </header> 
           {message && (
               <div className="form-group">
@@ -247,16 +239,16 @@ export default function Driver (){
                 </div>
               </div>
             )}
-          <div>
-          <div className="row container">
-            <div className="col-6">
-            <button className="btn btn-primary container" onClick={() => {
+          <div className="form-group ">
+          <div className="row">
+            <div className="col-5 container">
+            <button  onClick={() => {
             handleOnline()
           }}>{(status === "Offline") ? 'Online' : 
-          ((status === "Online") ? 'Offline' : ((status === "Cokhach") ? 'Nhận khách' : "Trả khách"))}</button>
+          ((status === "Online") ? 'Offline' : ((status === "isPassenger") ? 'Accept' : "Done Trip"))}</button>
             </div>
             <div className="col-6">
-            {(status === "Cokhach") && (<button className="btn btn-primary container" onClick={() => window.location.reload()}>
+            {(status === "isPassenger") && (<button  onClick={() => window.location.reload()}>
             Cancel
           </button>)}
             </div>
@@ -266,9 +258,8 @@ export default function Driver (){
           <AcceptJourney info={customerInfo} />
         </div >
         <div className="">
-          <GongMapDriver Online={status}/>  
-        </div>
-              
+          <GongMapDriver Online={Online}/>  
+        </div>              
           
         </div>
       </React.Fragment>

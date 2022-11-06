@@ -18,10 +18,10 @@ class DriverService {
         { headers: authHeader() });
     }
 
-    putDriver(id, carOwner, carCode, carType, carSeat, carColor) {
+    putDriver(Phone,Fullname, Date_of_birth, Car_owner,Car_type,Car_code,Car_color) {
         
         return axios.put(process.env.REACT_APP_API_URL + "/driver/put-driver", {
-            id, carOwner, carCode, carType, carSeat, carColor         
+            Phone,Fullname, Date_of_birth, Car_owner,Car_type,Car_code,Car_color         
         },
         { headers: authHeader() });
     }

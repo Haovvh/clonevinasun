@@ -12,9 +12,9 @@ const required = value => {
 
 export default function DriverJourney(props) {
     
-    if (props.info.Phone === "" && props.info.Fullname === "" && props.info.Car_code === "") {
+    if (!(props.info.Phone  && props.info.Fullname && props.info.Car_code )) {
         return null;
-    }
+    }   
     return (
         <React.Fragment>
             <div className=" card-container">
@@ -31,7 +31,7 @@ export default function DriverJourney(props) {
                     <div className="form-group">
                         <label htmlFor="username">Phone:</label>
                         <input
-                            type="text"
+                            type="phone"
                             className="form-control"
                             value={props.info.Phone}
                             disabled
