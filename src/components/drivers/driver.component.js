@@ -24,7 +24,7 @@ export default function Driver (){
   });
   const driver_ID = authHeader().id;
   const [IsDriver, setIsDriver] = useState(false);
-  const [Online, setOnline] = useState(false);
+  const [Online, setOnline] = useState();
   const [status, setStatus] = useState("Offline")
   const [customerInfo, setCustomerInfo] = useState({})
   const [socket_ID, setSocket_ID] = useState("");

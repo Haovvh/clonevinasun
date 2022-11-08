@@ -25,6 +25,7 @@ export default function PassengerJourney (props) {
 
     const [message, setMessage] = useState("");
     const [Price, setPrice] = useState(0);
+    const [Car_seat, setCar_seat] = useState('');
     const [journey, setJourney] = useState({
         origin_Id: "",
         origin_Fulladdress: "",
@@ -215,7 +216,7 @@ export default function PassengerJourney (props) {
                         
                         
                         setDistance("Distance: " + json.legs[0].distance.text)
-                        setPrice(parseInt(json.legs[0].distance.value)*MONEY_1KM_DISTANCE/1000)
+                        setPrice( Math.round((json.legs[0].distance.value)*MONEY_1KM_DISTANCE/1000))
                         setDistance_km(parseInt(json.legs[0].distance.value)/1000)
                         setDuration("Time: " + json.legs[0].duration.text)
                         setStatus("bookdriver")
@@ -257,7 +258,8 @@ export default function PassengerJourney (props) {
                 pointCode: journey.pointCodes,
                 Price: distance_km * 10000,
                 Fullname: props.InfoPassenger.Fullname,
-                Phone: props.InfoPassenger.Phone
+                Phone: props.InfoPassenger.Phone,
+                Car_seat: Car_seat
 
             });
             
@@ -283,6 +285,10 @@ export default function PassengerJourney (props) {
             setStatus("showtripinfo");
             setDisabled(false)
         }        
+    }
+
+    const handleChange = (event) => {
+        setCar_seat( event.target.value)
     }
     //
 //
@@ -330,7 +336,7 @@ export default function PassengerJourney (props) {
                         </datalist>
                     </div>
                     <div className="form-group">
-                        <select id="cars" name="cars">
+                        <select value={Car_seat} onChange = {(event) =>{handleChange(event)}}>
                             <option value="4">Car 4 seat</option>
                             <option value="7">Car 7 seat</option>
                             <option value="">Any</option>
