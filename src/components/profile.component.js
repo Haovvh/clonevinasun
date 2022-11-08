@@ -13,12 +13,11 @@ export default function Profile (props) {
   return (
     <React.Fragment>
       <div>
-      {user.role.includes('ROLE_PASSENGER') && (<ProfilePassenger/>)}
+      {(user.role.includes('ROLE_PASSENGER') || user.role.includes('ROLE_SUPPORTSTAFF')) && (<ProfilePassenger/>)}
       </div>
       <div>
         {user.role.includes('ROLE_DRIVER') && <ProfileDriver/>}
-      </div>
-      
+      </div>      
       
     </React.Fragment>
   );

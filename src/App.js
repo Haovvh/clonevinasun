@@ -12,8 +12,11 @@ import Passenger from "./components/passengers/passengers.component";
 import Driver from "./components/drivers/driver.component";
 import SupportStaff from "./components/supportstaff/supportstaff.component";
 import NewUser from "./components/newuser/newuser.component";
-// import AuthVerify from "./common/auth-verify";
 import EventBus from "./common/EventBus";
+import HistoryPassenger from "./components/passengers/history.passenger.component";
+import HistoryDriver from "./components/drivers/history.driver.component";
+import HistorySupportStaff from "./components/supportstaff/history.supportstaff.component";
+
 
 class App extends Component {
   constructor(props) {
@@ -79,6 +82,13 @@ class App extends Component {
                 </Link>
               </li>
             )}
+            { currentUser && showDriver  && (
+              <li className="nav-item">
+                <Link to={"/historydriver"} className="nav-link">
+                  History Driver
+                </Link>
+              </li>
+            )}
 
             { currentUser && showSupportStaff  && (
               <li className="nav-item">
@@ -87,10 +97,18 @@ class App extends Component {
                 </Link>
               </li>
             )}
+
             { currentUser && showSupportStaff  && (
               <li className="nav-item">
                 <Link to={"/newuser"} className="nav-link">
-                  Thêm mới người dùng
+                  Create User
+                </Link>
+              </li>
+            )}
+            { currentUser && showSupportStaff  && (
+              <li className="nav-item">
+                <Link to={"/historysupportstaff"} className="nav-link">
+                  History Support Staff
                 </Link>
               </li>
             )}
@@ -102,13 +120,21 @@ class App extends Component {
                 </Link>
               </li>
             )}
+
+            { currentUser && showPassenger && (
+              <li className="nav-item">
+                <Link to={"/historypassenger"} className="nav-link">
+                  History Passenger
+                </Link>
+              </li>
+            )}
           </div>
 
           {currentUser ? (
             <div className="navbar-nav ml-auto">
               <li className="nav-item">
                 <Link to={"/profile"} className="nav-link">
-                  Xin chào {currentUser.name}
+                  Well come {currentUser.name}
                 </Link>
               </li>
               <li className="nav-item">
@@ -127,7 +153,7 @@ class App extends Component {
 
               <li className="nav-item">
                 <Link to={"/register"} className="nav-link">
-                  Sign Up
+                  Register
                 </Link>
               </li>
             </div>
@@ -141,8 +167,11 @@ class App extends Component {
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/passenger" element={<Passenger />} />
+            <Route path="/historypassenger" element={<HistoryPassenger />} />
             <Route path="/driver" element={<Driver/>} />
+            <Route path="/historydriver" element={<HistoryDriver/>} />
             <Route path="/supportstaff" element={<SupportStaff />} />
+            <Route path="/historysupportstaff" element={<HistorySupportStaff />} />
             <Route path="/newuser" element={<NewUser />} />
           </Routes>
         </div>

@@ -17,10 +17,10 @@ export default function DriverJourney(props) {
     }   
     return (
         <React.Fragment>
-            <div className=" card-container">
+            <div  className=" card-container">
                 <div className=" col-md-12">
                     <div className="form-group">
-                        <label htmlFor="username">Tài xế:</label>
+                        <label htmlFor="username">Driver:</label>
                         <input
                             type="text"
                             className="form-control"
@@ -38,7 +38,7 @@ export default function DriverJourney(props) {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="username">Biển số xe:</label>
+                        <label htmlFor="username">Car Code:</label>
                         <input
                             type="text"
                             className="form-control"
@@ -47,7 +47,7 @@ export default function DriverJourney(props) {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="">Thông tin xe:</label>
+                        <label htmlFor="">Car Info:</label>
                         <input
                             type="text"
                             className="form-control"

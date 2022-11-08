@@ -109,7 +109,7 @@ export default function ProfileDriver (props) {
     <React.Fragment>
       <div className="col-sm-12">
         
-        <div className="card card-container">
+        <div className="card">
           <h1>Driver Info</h1>
           <div className="form-group">
             <label htmlFor="username">FullName:</label>
@@ -180,8 +180,8 @@ export default function ProfileDriver (props) {
                           console.log(event.target.value)       
                               setCar_seat(event.target.value)
                             }}>
-                            <option value="4">Car 4 chỗ</option>
-                            <option value="7">Car 7 chỗ</option>
+                            <option value="4">Car 4 Seat</option>
+                            <option value="7">Car 7 Seat</option>
                         </select>                        
                     </div>
                     <div className="form-group">
@@ -201,11 +201,11 @@ export default function ProfileDriver (props) {
                             <div className="col-5 container">
                                 <button className="btn btn-primary " onClick={() => {
                                 handleOnClick()}}>
-                                Cập nhật
+                                Update
                                 </button>
                             </div>
                             <div className="col-5 container">
-                                <button className="btn btn-primary " onClick={() => {
+                                <button className="btn btn-primary" onClick={() => {
                                   
                                 window.location.assign(`${URL_PORT}/profile`);}}>Cancel</button>
                             </div>

@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import AuthService from "../services/auth.service";
 import passengerService from "../services/passenger.service";
 import driverService from "../services/driver.service";
-import CheckButton from "react-validation/build/button";
-import authService from "../services/auth.service";
+
 
 const required = value => {
   if (!value) {
@@ -38,6 +37,7 @@ export default function ProfilePassenger (props) {
 
 
   useEffect( () => {
+
     passengerService.getPassenger().then(
       response => {
         if(response.data.resp) {
@@ -58,14 +58,12 @@ export default function ProfilePassenger (props) {
         error.toString();
         setMessage(resMessage)
         localStorage.removeItem("user");
-        alert("Vui lòng đăng nhập lại");
+        alert("Please Login");
         window.location.assign("http://localhost:8082/login")
       }
     )
     
-  },[])
-
-    
+  },[])    
 
   // gọi API trở thành tài xế
   
@@ -84,8 +82,8 @@ export default function ProfilePassenger (props) {
               console.log(response.data) 
               setMessage(response.data.message)   
               localStorage.removeItem("user")
-              alert(`Cập nhật thông tin thành công.
-              Vui lòng đăng nhập lại để sử dụng chức năng`)
+              alert(`Update Success.
+              Please Login`)
               window.location.assign("http://localhost:8082/login")
             }
             else {
@@ -146,7 +144,7 @@ export default function ProfilePassenger (props) {
           console.log(response.data.resp)
           setMessage(response.data.message)
           localStorage.removeItem("user")
-          alert("Cập nhật thông tin thành công. Vui lòng đăng nhập lại")
+          alert("Update Success. Please Login")
           window.location.assign("http://localhost:8082/login")
         }
         else {
@@ -172,7 +170,7 @@ export default function ProfilePassenger (props) {
   return (
     <React.Fragment>
       <div className="col-md-12">
-        <div>
+        <div className="form-group ">
         {message && (
               <div className="form-group">
                 <div
@@ -187,30 +185,33 @@ export default function ProfilePassenger (props) {
                 </div>
               </div>
             )}
-        <div>
-              <label htmlFor="username">Nhập mã:</label>
-                    <input
-                            type="text"
-                            className="form-control"
-                            value={SupportStaffCode}
-                            onChange={(event) => setSupportStaffCode(event.target.value)}
-                            validations={[required]}
-                        />
-                    </div>
-          <button onClick={() => handleSupportStaff()}>
-            Trở Thành SupportStaff
-          </button>
-        </div>
+            <div form-group>
+                  <label htmlFor="username">Input SupportStaff Code:</label>
+                        <input
+                                type="text"
+                                className="form-control"
+                                value={SupportStaffCode}
+                                onChange={(event) => setSupportStaffCode(event.target.value)}
+                                validations={[required]}
+                            />
+                        </div>
 
-      {InfoPassenger.Phone && (
-              <div className="form-group">
-                <button className="btn btn-primary " onClick={() => {
-                                handleIsDriver()}}>
-                                Thành tài xế
-                </button>
-              </div>
-            )}
-        <div className="card card-container">
+            <div className="form-group ">
+                        <div className="row">
+                            <div className="col-5 container">
+                            <button className="btn btn-primary " onClick={() => handleSupportStaff()}>
+                      Is SupportStaff
+                    </button>
+                            </div>
+                            {InfoPassenger.Phone && (
+                            <div className="col-5 container">
+                            <button className="btn btn-primary " onClick={() => {
+                            handleIsDriver()}}>Is Driver</button>
+                            </div>
+                            )}
+                        </div>              
+            
+        <div className="card">
           <div className="form-group">        
             
             {statusCode !== "isDriver"  && 
@@ -244,9 +245,7 @@ export default function ProfilePassenger (props) {
                             onChange={(event) => setInfoPassenger(prevState => ({...prevState, Date_of_birth: event.target.value}))}
                             validations={[required]}
                         />
-                        </div>
-
-            
+                        </div>            
             
                     </div>)}
                     {statusCode === "isDriver" && 
@@ -294,8 +293,8 @@ export default function ProfilePassenger (props) {
                           console.log(event.target.value)       
                               setCar_seat(event.target.value)
                             }}>
-                            <option value="4">Car 4 chỗ</option>
-                            <option value="7">Car 7 chỗ</option>
+                            <option value="4">Car 4 seat</option>
+                            <option value="7">Car 7 seat</option>
                         </select>
                         
                     </div>
@@ -316,9 +315,9 @@ export default function ProfilePassenger (props) {
                     <div className="form-group ">
                         <div className="row">
                             <div className="col-5 container">
-                                <button className="btn btn-primary " onClick={() => {
+                                <button className="btn btn-primary" onClick={() => {
                                 handleOnClick()}}>
-                                {(statusCode === "isDriver") ? "Cập nhật tài xế" : "Cập nhật"}
+                                {(statusCode === "isDriver") ? "Update" : "OK"}
                                 </button>
                             </div>
                             <div className="col-5 container">
@@ -326,11 +325,12 @@ export default function ProfilePassenger (props) {
                                 window.location.reload();}}>Cancel</button>
                             </div>
                         </div>
-                    </div>                        
-                         
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        </div>
-      </div>
     </React.Fragment>
   );
 }

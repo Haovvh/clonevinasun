@@ -60,7 +60,7 @@ export default function Driver (){
         error.toString();
         setMessage(resMessage)
         localStorage.removeItem("user");
-        alert("Mã đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại");
+        alert("Token is Exprise. Please Login");
         window.location.assign("http://localhost:8082/login")
       }
     )
@@ -242,7 +242,7 @@ export default function Driver (){
           <div className="form-group ">
           <div className="row">
             <div className="col-5 container">
-            <button  onClick={() => {
+            <button  className="btn btn-primary" onClick={() => {
             handleOnline()
           }}>{(status === "Offline") ? 'Online' : 
           ((status === "Online") ? 'Offline' : ((status === "isPassenger") ? 'Accept' : "Done Trip"))}</button>

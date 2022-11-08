@@ -124,8 +124,7 @@ export default function StaffJourney (props) {
         setDisabled(false);    
       })
     
-        // mở nhận socket tên broadcat
-        
+        // mở nhận socket tên broadcat       
 
     
     //lấy giá trị trong textbox 
@@ -180,9 +179,9 @@ export default function StaffJourney (props) {
                         }))
                         
                         
-                        setDistance("Quảng đường: " + json.legs[0].distance.text)
+                        setDistance("Distance: " + json.legs[0].distance.text)
                         setDistance_km(parseInt(json.legs[0].distance.value)/1000)
-                        setDuration("Thời gian: " + json.legs[0].duration.text)
+                        setDuration("Time: " + json.legs[0].duration.text)
                         setStatus("bookdriver")
                         setDisabled(true)
                     }
@@ -265,10 +264,10 @@ export default function StaffJourney (props) {
                             </h1>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="username">Điểm đón:</label>
+                            <label htmlFor="username">Origin:</label>
                             <input
                                 list="placeFrom" name="browser"
-                                placeholder="Điểm đón"
+                                placeholder="Origin"
                                 type="text"
                                 className="form-control"
                                 value={journey.origin_Fulladdress}
@@ -281,10 +280,10 @@ export default function StaffJourney (props) {
                             </datalist>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="username">Điểm đến:</label>
+                            <label htmlFor="username">Destination:</label>
                             <input
                                 list="placeTo"
-                                placeholder="Điểm đến"
+                                placeholder="Destination"
                                 type="text"
                                 className="form-control"
                                 value={journey.destination_Fulladdress}
@@ -301,15 +300,16 @@ export default function StaffJourney (props) {
                         <select className="form-control" value={Car_seat} onChange={(event) => {       
                               setCar_seat(event.target.value)
                             }}>
-                            <option value="4">Car 4 chỗ</option>
-                            <option value="7">Car 7 chỗ</option>
-                            <option value="">Car 7 chỗ</option>
+                            <option value="4">Car 4 Seat</option>
+                            <option value="7">Car 7 Seat</option>
+                            <option value="">Any</option>
                         </select> 
                         </div>
                         <div className="form-group ">
                             <div className="row">
                                 <div className="col-5 container">
-                                    <button  onClick={() => {
+                                    <button className="btn btn-primary" 
+                                    onClick={() => {
                                     handleOnClick()}}>
                                     {(status === "showtripinfo") ? "Show Trip Info" : 
                                     (status === "bookdriver") ? "Book Driver" : 
@@ -318,7 +318,7 @@ export default function StaffJourney (props) {
                                     </button>
                                 </div>
                                 <div className="col-5 container">
-                                    <button  onClick={() => {
+                                    <button  className="btn btn-primary" onClick={() => {
                                     window.location.reload();}}>Cancel</button>
                                 </div>
                             </div>

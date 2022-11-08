@@ -39,19 +39,18 @@ export default function Passenger () {
         error.toString();
         setMessage(resMessage)
         localStorage.removeItem("user");
-        alert("Mã đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại");
+        alert("Token is Exprise. Please Login");
         window.location.assign("http://localhost:8082/login")
       }
     )
   },[])
   
-    if(!(InfoPassenger.role )) {
-      
+    if(!(InfoPassenger.role )) {      
       return null;
     } 
     if (!InfoPassenger.Phone) {
       return (
-        <h3>Vui lòng cập nhật Thông tin để sử dụng chức năng gọi xe</h3>
+        <h3>Please update info. You book Driver</h3>
       )
     }
     return (

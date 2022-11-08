@@ -23,6 +23,7 @@ export default function SupportStaff () {
   const [SupportStaff, setSupportStaff] = useState({
     SupportStaff_ID: "",
     Fullname: "", 
+    Phone: "",
     role: ""
   })
 
@@ -38,11 +39,13 @@ export default function SupportStaff () {
   useEffect( () =>{
     passengerService.getPassenger().then(
       response => {
+        console.log(response.data.data)
         if(response.data.resp) {
           setSupportStaff(prevState => ({
             ...prevState,
             SupportStaff_ID: response.data.data.Passenger_ID,
             Fullname: response.data.data.Fullname, 
+            Phone: response.data.data.Phone,
             role: response.data.data.role
           }))
         } else {
@@ -57,7 +60,7 @@ export default function SupportStaff () {
           error.toString();  
           setMessage(resMessage)
           localStorage.removeItem("user");
-          alert("Mã đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại");
+          alert("Token is Expires. Please Login");
           window.location.assign("http://localhost:8082/login")
       }
     )
@@ -86,7 +89,6 @@ export default function SupportStaff () {
       },
       error => {
         
-        console.log("Error")
         const resMessage =
           (error.response &&
             error.response.data &&
@@ -113,7 +115,8 @@ export default function SupportStaff () {
       <React.Fragment>
         <div className="container">
         <header className="jumbotron">
-          <h3>SupportStaff: {SupportStaff.Fullname} </h3>           
+          <h3>SupportStaff: {SupportStaff.Fullname} </h3>       
+          <h3>Phone: {SupportStaff.Phone} </h3>     
           
         </header>
         </div>
@@ -142,19 +145,18 @@ export default function SupportStaff () {
             
             <div className="row">
               <div className="form-group col-5">
-                <button  onClick={() => {handleClick()}}>
-                  Show Customer</button>
+                <button className="btn btn-primary" onClick={() => {handleClick()}}>
+                  Search</button>
               </div>
               {(hidden) ? (<div className="col-5" >
-                <button onClick={() => setShow(!show)}>
-                  {show ? "Ẩn thông tin" :"Hiện thông tin"}
+                <button className="btn btn-primary" onClick={() => setShow(!show)}>
+                  {!show ? "Show" :"Hidden"}
                 </button>
               </div>) : null}              
             </div>          
             
           </div>
-          <UserInfo show = {show}  places = {places} countPlace = {countPlace} Fullname={Info.Fullname}/>
-          
+          <UserInfo show = {show}  places = {places} countPlace = {countPlace} Fullname={Info.Fullname}/>          
         </div>
       </React.Fragment>      
     );

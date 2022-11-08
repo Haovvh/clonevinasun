@@ -5,6 +5,7 @@ import socketIOClient from "socket.io-client";
 import authHeader from "../../services/auth-header";
 import journeyService from "../../services/journey.service";
 import DriverJourney from "./driverJourney.component"
+import { MONEY_1KM_DISTANCE } from "../../public/const";
 
 const param = { query: 'token=' }
 const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
@@ -23,6 +24,7 @@ const required = value => {
 export default function PassengerJourney (props) {    
 
     const [message, setMessage] = useState("");
+    const [Price, setPrice] = useState(0);
     const [journey, setJourney] = useState({
         origin_Id: "",
         origin_Fulladdress: "",
@@ -113,10 +115,7 @@ export default function PassengerJourney (props) {
                     error.response.data.message) ||
                   error.message ||
                   error.toString();
-                  setMessage(resMessage)   
-                  //localStorage.removeItem("user")
-                  //alert("Vui lòng đăng nhập lại")
-                  //window.location.assign("http://localhost:8082/login")               
+                  setMessage(resMessage)            
                 }
         )
         
@@ -215,9 +214,10 @@ export default function PassengerJourney (props) {
                         }))
                         
                         
-                        setDistance("Quảng đường: " + json.legs[0].distance.text)
+                        setDistance("Distance: " + json.legs[0].distance.text)
+                        setPrice(parseInt(json.legs[0].distance.value)*MONEY_1KM_DISTANCE/1000)
                         setDistance_km(parseInt(json.legs[0].distance.value)/1000)
-                        setDuration("Thời gian: " + json.legs[0].duration.text)
+                        setDuration("Time: " + json.legs[0].duration.text)
                         setStatus("bookdriver")
                         setDisabled(true)
                     }
@@ -291,18 +291,17 @@ export default function PassengerJourney (props) {
             <div className="container">
                 <div className="card">
                     <div>
-                        <h1>
-                            {distance}
-                        </h1>
-                        <h1>
-                            {duration}
-                        </h1>
+                        <h4>
+                        {distance}
+                        </h4>
+                        {Price >0 && <h4>Price: {Price} VND</h4>}
+                        
                     </div>
                     <div className="form-group">
-                        <label htmlFor="username">Điểm đón:</label>
+                        <label htmlFor="username">Origin:</label>
                         <input
                             list="placeFrom" name="browser"
-                            placeholder="Điểm đón"
+                            placeholder="Origin"
                             type="text"
                             className="form-control"
                             value={journey.origin_Fulladdress}
@@ -315,10 +314,10 @@ export default function PassengerJourney (props) {
                         </datalist>
                     </div>
                     <div className="form-group">
-                        <label htmlFor="username">Điểm đến:</label>
+                        <label htmlFor="username">Destination:</label>
                         <input
                             list="placeTo"
-                            placeholder="Điểm đến"
+                            placeholder="Destination"
                             type="text"
                             className="form-control"
                             value={journey.destination_Fulladdress}
@@ -332,15 +331,15 @@ export default function PassengerJourney (props) {
                     </div>
                     <div className="form-group">
                         <select id="cars" name="cars">
-                            <option value="car4">Car 4 Chỗ</option>
-                            <option value="car7">Car 7 Chỗ</option>
-                            <option value="car7">Bất kỳ</option>
+                            <option value="4">Car 4 seat</option>
+                            <option value="7">Car 7 seat</option>
+                            <option value="">Any</option>
                         </select>
                     </div>
                     <div className="form-group ">
                         <div className="row">
                             <div className="col-5 container">
-                                <button  onClick={() => {
+                                <button  className="btn btn-primary" onClick={() => {
                                 handleOnClick()}}>
                                 {(status === "showtripinfo") ? "Show Trip Info" : 
                                 (status === "bookdriver") ? "Book Driver" : 
@@ -349,7 +348,7 @@ export default function PassengerJourney (props) {
                                 </button>
                             </div>
                             <div className="col-5 container">
-                                <button  onClick={() => {
+                                <button className="btn btn-primary"  onClick={() => {
                                 window.location.reload();}}>Cancel</button>
                             </div>
                         </div>

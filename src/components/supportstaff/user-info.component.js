@@ -14,7 +14,7 @@ export default function UserInfo(props) {
                 <div className="container">
                 <div className="col-md-12">
                     <div className="form-group">
-                        <label htmlFor="name">Họ và tên: </label>   
+                        <label htmlFor="name">FullName: </label>   
                         <input
                             type="text"
                             value={props.Fullname}
@@ -25,16 +25,16 @@ export default function UserInfo(props) {
                 </div>
             </div>
             <div>
-                <h1>Lịch sử các cuộc gọi gần nhất:</h1>
+                <h1>Call History:</h1>
             </div>
             <div className="container totalTable">
                 <div className="col-md-12">
                     <table>
                         <tbody>
                             <tr>
-                                <th>Thời Gian:</th>
-                                <th>Địa điểm đến gần nhất:</th>
-                                <th>Địa điểm đi gần nhất:</th>
+                                <th>Time:</th>
+                                <th>Origin:</th>
+                                <th>Destination:</th>
                             </tr>
                             {props.places.map((val, key) => {
                                 return (
@@ -50,15 +50,15 @@ export default function UserInfo(props) {
                 </div>
             </div>
             <div>
-                <h1>Lịch sử các chuyến đi:</h1>
+                <h1>Place History:</h1>
             </div>
             <div className="container totalTable">
                 <div className="col-md-12">
                     <table>
                         <tbody>
                             <tr>
-                                <th>Địa điểm:</th>
-                                <th>Số lần đi:</th>
+                                <th>Place:</th>
+                                <th>Count:</th>
                             </tr>
                             {props.countPlace.map((val, key) => {
                                 return (

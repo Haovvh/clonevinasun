@@ -63,10 +63,10 @@ export default function NewUser () {
                 <Form
                 >
                 <div className="form-group">
-                    <label htmlFor="phonecustomer">Phone User: </label>
+                    <label htmlFor="phoneuser">Phone User: </label>
                     <Input
                       value={NewInfo.Phone}
-                      placeholder="Phone Customer"
+                      placeholder="Phone User"
                       type="phone"
                       className="form-control"
                       validations={[required]}
@@ -74,7 +74,7 @@ export default function NewUser () {
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="phonecustomer">Tên người dùng: </label>
+                    <label htmlFor="phonecustomer">FullName: </label>
                     <Input
                       value={NewInfo.Fullname}
                       placeholder="Fullname"
@@ -85,10 +85,10 @@ export default function NewUser () {
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="">Năm sinh: </label>
+                    <label htmlFor="">Date of birth: </label>
                     <Input
                       value={NewInfo.Date_of_birth}
-                      placeholder="Năm sinh"
+                      placeholder="Date of birth"
                       type="date"
                       className="form-control"
                       validations={[required]}
@@ -99,7 +99,7 @@ export default function NewUser () {
       
               </div>
               <div>        
-                <button onClick={() => {handleClickNewUSer()}} >Thêm mới người dùng</button>
+                <button className="btn btn-primary" onClick={() => {handleClickNewUSer()}} >Create</button>
               </div>
 
     </React.Fragment>

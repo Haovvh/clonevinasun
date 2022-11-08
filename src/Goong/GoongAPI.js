@@ -1,6 +1,5 @@
 import axios from "axios";
-
-let API_KEY = 'Q8Ig6pAAaXN7omsq4aAGbjx9JS2FyOuCAylzUwcq'
+import {API_KEY} from '../Goong/GoongKEY'
 
 class GoongAPI {
     

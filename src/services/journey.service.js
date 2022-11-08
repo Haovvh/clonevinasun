@@ -59,6 +59,20 @@ class Journey {
     return axios.get(process.env.REACT_APP_API_URL + "/journey/get-all-journey-by-passenger", 
     { headers: authHeader() });
   }
+  getAllJourneybyPassengerID() {
+    return axios.get(process.env.REACT_APP_API_URL + "/journey/get-all-journey-by-passengerID", 
+    { headers: authHeader() });
+  }
+
+  getAllJourneybydriverID() {
+    return axios.get(process.env.REACT_APP_API_URL + "/journey/get-all-journey-by-driverID", 
+    { headers: authHeader() });
+  }
+
+  getAllJourneybysupportstaffID() {
+    return axios.get(process.env.REACT_APP_API_URL + "/journey/get-all-journey-by-supportstaffID", 
+    { headers: authHeader() });
+  }
 
 }
 
