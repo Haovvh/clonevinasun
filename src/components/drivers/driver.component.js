@@ -27,7 +27,7 @@ export default function Driver (){
   const [IsDriver, setIsDriver] = useState(false);
   const [Online, setOnline] = useState("");
   const [status, setStatus] = useState("Offline")
-  const [customerInfo, setCustomerInfo] = useState({})
+  const [PassengerInfo, setPassengerInfo] = useState({})
   const [socket_ID, setSocket_ID] = useState("");
 
   useEffect(  () => {  
@@ -76,7 +76,7 @@ export default function Driver (){
         if(response.data.resp) {
           console.log("Có Data")
           const user = response.data.data;          
-          setCustomerInfo( prevState => ({
+          setPassengerInfo( prevState => ({
                 ...prevState,
                 Passenger_ID: user.Passenger_ID,
                 Fullname: user.Fullname,
@@ -119,7 +119,7 @@ export default function Driver (){
       if(driver_ID === driver[i].Driver_ID){
         setSocket_ID(data.socket_ID)
         setStatus("isPassenger");
-        setCustomerInfo(prevState =>  ({
+        setPassengerInfo(prevState =>  ({
           ...prevState,
           Passenger_ID: data.user.Passenger_ID,
           User_ID: data.user.User_ID,
@@ -172,16 +172,22 @@ export default function Driver (){
     } else if(status === "isPassenger") {
       //goi api tạo journey
       console.log(" vao status co khach")
-      journeyService.createjourney(customerInfo.Passenger_ID,customerInfo.User_ID, 
-        customerInfo.SupportStaff_ID, driver_ID, customerInfo.Price,
-         customerInfo.origin_Id, customerInfo.origin_Fulladdress,
-         customerInfo.destination_Id, customerInfo.destination_Fulladdress, 
-         customerInfo.distance_km, customerInfo.pointCode).then(
+      journeyService.createjourney(PassengerInfo.Passenger_ID,PassengerInfo.User_ID, 
+        PassengerInfo.SupportStaff_ID, driver_ID, PassengerInfo.Price,
+        PassengerInfo.origin_Id, PassengerInfo.origin_Fulladdress,
+        PassengerInfo.destination_Id, PassengerInfo.destination_Fulladdress, 
+        PassengerInfo.distance_km, PassengerInfo.pointCode).then(
           response => {
             if(response.data.resp) {
               setMessage(response.data.message)
               console.log(response.data)
-              console.log(driverInfo)
+              onlinedriverService.putOnlineDriver("isTrip").then(
+                response => {
+                  console.log(response.data);
+                }, error => {
+                  console.log(error)
+                }
+              )
               socket.emit("driveracceptjourney", {
                 socket_ID: socket_ID,
                 Driver_ID: driverInfo.Driver_ID,
@@ -196,7 +202,7 @@ export default function Driver (){
             } else {
               setMessage(response.data.message)
               setStatus("Online")
-              setCustomerInfo({})
+              setPassengerInfo({})
             }     
           },
           error => {
@@ -212,7 +218,7 @@ export default function Driver (){
 
     } else if(status === "Donetrip") {
       //gọi api update journey thành công
-      journeyService.updatejourney(driver_ID, customerInfo.SupportStaff_ID).then(
+      journeyService.updatejourney(driver_ID, PassengerInfo.SupportStaff_ID).then(
         response => {
           if(response.data.resp) {
             setMessage(response.data.message)
@@ -220,8 +226,15 @@ export default function Driver (){
               socket_ID: socket_ID,
               Status: "success"
             })
+            onlinedriverService.putOnlineDriver("Online").then(
+              response => {
+                console.log(response.data);
+              }, error => {
+                console.log(error)
+              }
+            )
             setStatus("Online")
-            setCustomerInfo({});
+            setPassengerInfo({});
           } else {
             setMessage(response.data.message)
           }        
@@ -281,7 +294,7 @@ export default function Driver (){
           </div>
         </div>        
         <div>
-          <AcceptJourney info={customerInfo} />
+          <AcceptJourney info={PassengerInfo} />
         </div >
         <div className="">
           {(Online === "Offline") ? <h1>Offline</h1> : 
