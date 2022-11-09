@@ -1,7 +1,5 @@
 import React, {useState} from "react";
 import userByPhoneService from "../../services/user-by-phone.service";
-import Input from "react-validation/build/input";
-import Form from "react-validation/build/form";
 
 
 const required = value => {
@@ -60,11 +58,10 @@ export default function NewUser () {
                     </div>
                   )}
               <div>
-                <Form
-                >
+                
                 <div className="form-group">
                     <label htmlFor="phoneuser">Phone User: </label>
-                    <Input
+                    <input
                       value={NewInfo.Phone}
                       placeholder="Phone User"
                       type="phone"
@@ -75,7 +72,7 @@ export default function NewUser () {
                   </div>
                   <div className="form-group">
                     <label htmlFor="phonecustomer">FullName: </label>
-                    <Input
+                    <input
                       value={NewInfo.Fullname}
                       placeholder="Fullname"
                       type="phone"
@@ -86,7 +83,7 @@ export default function NewUser () {
                   </div>
                   <div className="form-group">
                     <label htmlFor="">Date of birth: </label>
-                    <Input
+                    <input
                       value={NewInfo.Date_of_birth}
                       placeholder="Date of birth"
                       type="date"
@@ -94,8 +91,7 @@ export default function NewUser () {
                       validations={[required]}
                       onChange={(event) => setNewInfo(prevState => ({...prevState, Date_of_birth: event.target.value}))}
                     />
-                  </div>
-                </Form>              
+                  </div>            
       
               </div>
               <div>        

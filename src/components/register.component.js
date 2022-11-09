@@ -179,8 +179,7 @@ export default class Register extends Component {
                     onChange={this.onChangePassword}
                     validations={[required, vpassword]}
                   />
-                </div>
-                
+                </div>               
 
                 <div className="form-group">
                   <button className="btn btn-primary btn-block">Sign Up</button>

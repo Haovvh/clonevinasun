@@ -3,6 +3,7 @@ import GoongAPI from "../../Goong/GoongAPI";
 import socketIOClient from "socket.io-client";
 import DriverJourney from "../passengers/driverJourney.component";
 import passengerService from "../../services/passenger.service";
+import { MONEY_1KM_DISTANCE } from "../../public/const";
 
 const param = { query: 'token=' }
 const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
@@ -20,7 +21,8 @@ const required = value => {
 
 export default function StaffJourney (props) {
     
-    const [Car_seat,setCar_seat] = useState();
+    const [Car_seat,setCar_seat] = useState('');
+    const [Price, setPrice] = useState(0);
     const [message, setMessage] = useState("");
     const [journey, setJourney] = useState({
         origin_Id: "",
@@ -42,7 +44,6 @@ export default function StaffJourney (props) {
     const [status, setStatus] = useState("showtripinfo")
     const [distance_km, setDistance_km] = useState();
     const [distance, setDistance] = useState("")
-    const [duration, setDuration] = useState("")
     const [disabled, setDisabled] = useState(false);
 
     const [driverInfo, setDriverInfo] = useState({
@@ -90,8 +91,7 @@ export default function StaffJourney (props) {
         console.log("success passenger");
         setDistance_km()
         setDistance("")
-        setDuration("")
-
+        setPrice("");
         setDriverInfo({
             Fullname: "",
             Phone: "",
@@ -126,7 +126,9 @@ export default function StaffJourney (props) {
     
         // mở nhận socket tên broadcat       
 
-    
+    const handleChange = (event) => {
+        setCar_seat( event.target.value)
+    }
     //lấy giá trị trong textbox 
     const handlePlaceFrom = (event) => {   
 
@@ -144,7 +146,7 @@ export default function StaffJourney (props) {
     const handleOnClick = async () => {
         if(status === "showtripinfo") {
             try {
-                if (journey.origin_Fulladdress !== null && journey.destination_Fulladdress !== null) {
+                if (journey.origin_Fulladdress  && journey.destination_Fulladdress) {
 
                     const origins = await GoongAPI.getGeocode(journey.origin_Fulladdress);
 
@@ -180,8 +182,9 @@ export default function StaffJourney (props) {
                         
                         
                         setDistance("Distance: " + json.legs[0].distance.text)
+                        
+                        setPrice( Math.round((json.legs[0].distance.value)*MONEY_1KM_DISTANCE/1000))
                         setDistance_km(parseInt(json.legs[0].distance.value)/1000)
-                        setDuration("Time: " + json.legs[0].duration.text)
                         setStatus("bookdriver")
                         setDisabled(true)
                     }
@@ -218,9 +221,10 @@ export default function StaffJourney (props) {
                 },
                 distance_km: distance_km,
                 pointCode: journey.pointCodes,
-                Price: distance_km * 10000,
+                Price: Price,
                 Fullname: props.Info.Fullname,
-                Phone: props.Info.Phone
+                Phone: props.Info.Phone,
+                Car_seat: Car_seat
 
             });
             
@@ -228,23 +232,8 @@ export default function StaffJourney (props) {
         
         }
         else if (status === "completeTrip") {
-            console.log("completeTrip");
-            setJourney({
-                origin_Id: "",
-                origin_Fulladdress: "",
-                origin_LAT: "",
-                origin_LNG: "",
-                destination_Id: "",
-                destination_Fulladdress: "",
-                destination_LAT: "",
-                destination_LNG: "",
-                pointCodes: ""
-            })
-            setDistance_km();
-            setDistance("");
-            setDuration("")
-            setStatus("showtripinfo");
-            setDisabled(false)
+            window.location.reload()
+            
         }        
     }
     //
@@ -256,12 +245,10 @@ export default function StaffJourney (props) {
                 <div className="container">
                     <div className="card">
                         <div>
-                            <h1>
-                                {distance}
-                            </h1>
-                            <h1>
-                                {duration}
-                            </h1>
+                            <h4>
+                            {distance}
+                            </h4>
+                            {Price >0 && <h4>Price: {Price} VND</h4>}
                         </div>
                         <div className="form-group">
                             <label htmlFor="username">Origin:</label>
@@ -297,9 +284,7 @@ export default function StaffJourney (props) {
                         </div>
                         <div className="form-group">
                         <label htmlFor="username">Car Seat:</label>
-                        <select className="form-control" value={Car_seat} onChange={(event) => {       
-                              setCar_seat(event.target.value)
-                            }}>
+                        <select className="form-control" value={Car_seat} onChange = {(event) =>{handleChange(event)}}>
                             <option value="4">Car 4 Seat</option>
                             <option value="7">Car 7 Seat</option>
                             <option value="">Any</option>
