@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import AuthService from "../../services/auth.service";
 import passengerService from "../../services/passenger.service";
 import PassengerJourney from "./passengerJourney.component"
 
 
 export default function Passenger () {
 
+  
   const [InfoPassenger, setInfoPassenger] = useState({
     Date_of_birth: "",
     Fullname: "",

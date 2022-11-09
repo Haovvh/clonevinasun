@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import { useState } from 'react';
-import ReactMapGL, { GeolocateControl, Source, Layer } from '@goongmaps/goong-map-react';
+import ReactMapGL, { GeolocateControl} from '@goongmaps/goong-map-react';
 import { MAP_KEY } from './GoongKEY';
 import socketIOClient from "socket.io-client";
 import authHeader from '../services/auth-header';
@@ -17,30 +17,15 @@ export default function GongMapDriver(props) {
     longitude: 106.6657,
     zoom: 14
   });
-  const geojson = {
-    type: 'FeatureCollection',
-    features: [
-      {type: 'Feature', geometry: {type: props.type, coordinates: props.coordinates}}
-    ]
-  };
-  const layerStyle = {
-    id: 'route',
-    type: 'line',
-    Source:'route',
-    paint: {
-      'line-color': '#1e88e5',
-      'line-width': 8
-    }
-  };  
   
+    
 
   useEffect (()=>{
       var delay = 10000;
-      if (!props.Online) {
-        //Xóa dữ liệu driver trong DB ra
-          delay = 600000000
+      if (props.Online === "Online") {
+          delay = 5000
       } else {
-        delay = 10000
+        delay = 1000000
       }
       const intervalId = setInterval( () => {
         const param = { query: 'token=' }
@@ -54,16 +39,14 @@ export default function GongMapDriver(props) {
       }, delay) 
       return () => clearInterval(intervalId); //This is important   
     
-    },[viewport.latitude, viewport.longitude]
-  ) 
-  
+    },[]
+  )
 
   
   return (
     <React.Fragment>
 
-    {!props.Online ? (<h1>Bạn đang Offline</h1>) :
-    (<ReactMapGL className='container'
+    <ReactMapGL className='container'
       {...viewport}
       width="60vw"
       height="60vh"
@@ -77,13 +60,8 @@ export default function GongMapDriver(props) {
         trackUserLocation={true}
         auto
       />
-      <Source 
-        id="route" 
-        type="geojson" 
-        data= {geojson}>
-        <Layer {...layerStyle} />
-      </Source>
-    </ReactMapGL>)}
+      
+    </ReactMapGL>
     </React.Fragment>
   );
 }

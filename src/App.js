@@ -134,7 +134,7 @@ class App extends Component {
             <div className="navbar-nav ml-auto">
               <li className="nav-item">
                 <Link to={"/profile"} className="nav-link">
-                  Well come {currentUser.name}
+                  Welcome {currentUser.name}
                 </Link>
               </li>
               <li className="nav-item">

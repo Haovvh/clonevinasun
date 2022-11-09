@@ -42,8 +42,8 @@ export default function PassengerJourney (props) {
     const [places, setPlaces] = useState([])
     const [distance_km, setDistance_km] = useState();
     const [distance, setDistance] = useState("")
-    const [duration, setDuration] = useState("")
     const [disabled, setDisabled] = useState(false);
+    const [disabledbutton, setDisabledbutton] = useState(false);
     const [driverInfo, setDriverInfo] = useState({
         Fullname: "",
         Phone: "",
@@ -65,11 +65,13 @@ export default function PassengerJourney (props) {
             Car_seat: data.Car_seat,
             Car_color: data.Car_color
         })
+        setDisabledbutton(true)
     })
     
     socket.on("successpassenger",  (data) => {
-        console.log("success passenger");
+        
         setStatus("showtripinfo")
+        setPrice("");
         setJourney({
             origin_Id: "",
             origin_Fulladdress: "",
@@ -81,10 +83,9 @@ export default function PassengerJourney (props) {
             destination_LNG: "",
             pointCodes: ""
         })  
-        
+        setDisabledbutton(false)
         setDistance_km();
         setDistance("")
-        setDuration("")
         setDisabled(false);
         setDriverInfo({
             Fullname: "",
@@ -218,7 +219,6 @@ export default function PassengerJourney (props) {
                         setDistance("Distance: " + json.legs[0].distance.text)
                         setPrice( Math.round((json.legs[0].distance.value)*MONEY_1KM_DISTANCE/1000))
                         setDistance_km(parseInt(json.legs[0].distance.value)/1000)
-                        setDuration("Time: " + json.legs[0].duration.text)
                         setStatus("bookdriver")
                         setDisabled(true)
                     }
@@ -256,14 +256,15 @@ export default function PassengerJourney (props) {
                 },
                 distance_km: distance_km,
                 pointCode: journey.pointCodes,
-                Price: distance_km * 10000,
+                Price: Price,
                 Fullname: props.InfoPassenger.Fullname,
                 Phone: props.InfoPassenger.Phone,
                 Car_seat: Car_seat
 
             });
             
-            setStatus("completeTrip")           
+            setStatus("completeTrip") 
+                   
         
         }
         else if (status === "completeTrip") {
@@ -281,9 +282,9 @@ export default function PassengerJourney (props) {
             })
             setDistance_km();
             setDistance("");
-            setDuration("")
             setStatus("showtripinfo");
             setDisabled(false)
+            setDisabledbutton(false)
         }        
     }
 
@@ -312,6 +313,7 @@ export default function PassengerJourney (props) {
                             className="form-control"
                             value={journey.origin_Fulladdress}
                             onChange={(event) => { handlePlaceFrom(event) }}
+                            validations={[required]}
                             disabled={disabled}
                         />
                         <datalist id="placeFrom">
@@ -329,6 +331,7 @@ export default function PassengerJourney (props) {
                             value={journey.destination_Fulladdress}
                             onChange={(event) => { handlePlaceTo(event) }}
                             disabled={disabled}
+                            validations={[required]}
                         />
                         <datalist id="placeTo">
                             {places.map((item, key) => 
@@ -345,7 +348,7 @@ export default function PassengerJourney (props) {
                     <div className="form-group ">
                         <div className="row">
                             <div className="col-5 container">
-                                <button  className="btn btn-primary" onClick={() => {
+                                <button disabled={disabledbutton} className="btn btn-primary" onClick={() => {
                                 handleOnClick()}}>
                                 {(status === "showtripinfo") ? "Show Trip Info" : 
                                 (status === "bookdriver") ? "Book Driver" : 
@@ -354,7 +357,7 @@ export default function PassengerJourney (props) {
                                 </button>
                             </div>
                             <div className="col-5 container">
-                                <button className="btn btn-primary"  onClick={() => {
+                                <button className="btn btn-primary" disabled={disabledbutton} onClick={() => {
                                 window.location.reload();}}>Cancel</button>
                             </div>
                         </div>

@@ -30,7 +30,7 @@ export default function ProfilePassenger (props) {
   const [Car_type, setCar_type] = useState("");
   const [Car_owner, setCar_owner] = useState("");
   const [Car_code, setCar_code] = useState("");
-  const [Car_seat, setCar_seat] = useState("");
+  const [Car_seat, setCar_seat] = useState(4);
   const [Car_color, setCar_color] = useState("");
   const [SupportStaffCode, setSupportStaffCode] = useState("");
   const [message, setMessage] = useState("");
@@ -290,7 +290,7 @@ export default function ProfilePassenger (props) {
                       
                         <label htmlFor="username">Car Seat:</label>
                         <select className="form-control" value={Car_seat} onChange={(event) => { 
-                          console.log(event.target.value)       
+                                 
                               setCar_seat(event.target.value)
                             }}>
                             <option value="4">Car 4 seat</option>

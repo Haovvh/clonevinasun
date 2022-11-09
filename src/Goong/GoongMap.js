@@ -1,6 +1,6 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import { useState } from 'react';
-import ReactMapGL, { GeolocateControl, Source, Layer } from '@goongmaps/goong-map-react';
+import ReactMapGL, { GeolocateControl } from '@goongmaps/goong-map-react';
 import { MAP_KEY } from './GoongKEY';
 
 
@@ -15,21 +15,8 @@ export default function GongMap(props) {
     longitude: 106.6657,
     zoom: 14
   });
-  const geojson = {
-    type: 'FeatureCollection',
-    features: [
-      {type: 'Feature', geometry: {type: props.type, coordinates: props.coordinates}}
-    ]
-  };
-  const layerStyle = {
-    id: 'route',
-    type: 'line',
-    Source:'route',
-    paint: {
-      'line-color': '#1e88e5',
-      'line-width': 8
-    }
-  };
+  
+  
   return (
     <ReactMapGL className='container'
       {...viewport}
@@ -44,13 +31,7 @@ export default function GongMap(props) {
         positionOptions={{ enableHighAccuracy: true }}
         trackUserLocation={true}
         auto
-      />
-      <Source 
-        id="route" 
-        type="geojson" 
-        data= {geojson}>
-        <Layer {...layerStyle} />
-      </Source>
+      />      
     </ReactMapGL>
     
   );

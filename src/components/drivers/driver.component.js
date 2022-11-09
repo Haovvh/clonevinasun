@@ -5,6 +5,7 @@ import AcceptJourney from "./acceptJourney.component"
 import socketIOClient from "socket.io-client";
 import driverService from "../../services/driver.service";
 import journeyService from "../../services/journey.service";
+import onlinedriverService from "../../services/onlinedriver.service";
 
 const param = { query: 'token=' }
 const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
@@ -24,7 +25,7 @@ export default function Driver (){
   });
   const driver_ID = authHeader().id;
   const [IsDriver, setIsDriver] = useState(false);
-  const [Online, setOnline] = useState();
+  const [Online, setOnline] = useState("");
   const [status, setStatus] = useState("Offline")
   const [customerInfo, setCustomerInfo] = useState({})
   const [socket_ID, setSocket_ID] = useState("");
@@ -34,6 +35,7 @@ export default function Driver (){
     driverService.getDriver().then(
       response => {
         if(response.data.resp) {
+          console.log(response.data.data)
           setIsDriver(true);
           setDriverInfo(prevState => ({ ...prevState,
             Fullname: response.data.data.Fullname,
@@ -44,6 +46,8 @@ export default function Driver (){
             Car_seat: response.data.data.Car_seat,
             Car_color: response.data.data.Car_color
           }))
+          setOnline(response.data.data.Status)
+          setStatus(response.data.data.Status)
         } else {
           console.log(response.status);
           console.log(response.data)
@@ -83,8 +87,9 @@ export default function Driver (){
                 Price: user.Price,
                 pointCode: user.pointCode 
           }))
-          setOnline(true);
           setStatus("Donetrip")
+          //setOnline("Online");
+          
         } else {
 
         }
@@ -138,12 +143,30 @@ export default function Driver (){
     
     if (status === "Online") {
       //gọi API đến server
-      setOnline(false)
+      setOnline("Offline")
       setStatus("Offline");
+      onlinedriverService.putOnlineDriver("Offline").then(
+        response => {
+          if (response.data.resp) {
+            console.log("Success")
+          }
+        }, error => {
+          console.log(error)
+        }
+      )
       
 
     } else if (status === "Offline") {
-      setOnline(true)
+      onlinedriverService.putOnlineDriver("Online").then(
+        response => {
+          if (response.data.resp) {
+            console.log("Success")
+          }
+        }, error => {
+          console.log(error)
+        }
+      )
+      setOnline("Online")
       setStatus("Online");
 
     } else if(status === "isPassenger") {
@@ -244,11 +267,14 @@ export default function Driver (){
             <div className="col-5 container">
             <button  className="btn btn-primary" onClick={() => {
             handleOnline()
-          }}>{(status === "Offline") ? 'Online' : 
+          }}>
+            {(status === "Offline") ? 'Online' : 
           ((status === "Online") ? 'Offline' : ((status === "isPassenger") ? 'Accept' : "Done Trip"))}</button>
             </div>
             <div className="col-6">
-            {(status === "isPassenger") && (<button  onClick={() => window.location.reload()}>
+            {(status === "isPassenger") && (
+            <button   className="btn btn-primary"
+            onClick={() => window.location.reload()}>
             Cancel
           </button>)}
             </div>
@@ -258,7 +284,9 @@ export default function Driver (){
           <AcceptJourney info={customerInfo} />
         </div >
         <div className="">
+          {(Online === "Offline") ? <h1>Offline</h1> : 
           <GongMapDriver Online={Online}/>  
+            }
         </div>              
           
         </div>
