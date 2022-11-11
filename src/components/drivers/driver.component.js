@@ -7,11 +7,13 @@ import driverService from "../../services/driver.service";
 import journeyService from "../../services/journey.service";
 import onlinedriverService from "../../services/onlinedriver.service";
 
-const param = { query: 'token=' }
-const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
+
 
 
 export default function Driver (){  
+
+  const param = { query: 'token=' }
+  const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
 
   const [message, setMessage] = useState("");
   const [driverInfo, setDriverInfo] = useState({

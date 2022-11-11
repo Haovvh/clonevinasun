@@ -7,8 +7,7 @@ import journeyService from "../../services/journey.service";
 import DriverJourney from "./driverJourney.component"
 import { MONEY_1KM_DISTANCE } from "../../public/const";
 
-const param = { query: 'token=' }
-const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
+
 
 
 const required = value => {
@@ -21,7 +20,10 @@ const required = value => {
     }
   };
 
-export default function PassengerJourney (props) {    
+export default function PassengerJourney (props) {   
+    
+    const param = { query: 'token=' }
+    const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
 
     const [message, setMessage] = useState("");
     const [Price, setPrice] = useState(0);

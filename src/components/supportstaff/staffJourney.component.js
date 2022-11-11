@@ -5,8 +5,7 @@ import DriverJourney from "../passengers/driverJourney.component";
 import passengerService from "../../services/passenger.service";
 import { MONEY_1KM_DISTANCE } from "../../public/const";
 
-const param = { query: 'token=' }
-const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
+
 
 const required = value => {
     if (!value) {
@@ -20,6 +19,9 @@ const required = value => {
 
 
 export default function StaffJourney (props) {
+
+    const param = { query: 'token=' }
+    const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
     
     const [Car_seat,setCar_seat] = useState('');
     const [Price, setPrice] = useState(0);
