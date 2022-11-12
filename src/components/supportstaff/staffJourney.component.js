@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import GoongAPI from "../../Goong/GoongAPI";
-import socketIOClient from "socket.io-client";
+import io from "socket.io-client";
 import DriverJourney from "../passengers/driverJourney.component";
 import passengerService from "../../services/passenger.service";
 import { MONEY_1KM_DISTANCE } from "../../public/const";
+import authHeader from "../../services/auth-header";
 
-
-
+const socket = io.connect(process.env.REACT_APP_WEBSOCKETHOST)
+const room = `000${authHeader().id}`;
 const required = value => {
     if (!value) {
       return (
@@ -20,8 +21,6 @@ const required = value => {
 
 export default function StaffJourney (props) {
 
-    const param = { query: 'token=' }
-    const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
     
     const [Car_seat,setCar_seat] = useState('');
     const [Price, setPrice] = useState(0);
@@ -57,6 +56,9 @@ export default function StaffJourney (props) {
         Car_color: ""
     });
     useEffect( ()=> {
+        socket.emit("join_room", {
+            room: room
+        });
         passengerService.getPassenger().then(
             response => {
                 if(response.data.resp) {
@@ -75,7 +77,7 @@ export default function StaffJourney (props) {
             }
         )
 
-    },[])
+    },[socket])
 
     socket.on("driverinfo", (data) => {
         console.log(data)
@@ -205,7 +207,7 @@ export default function StaffJourney (props) {
             
             //socket gọi đến server tìm tài xế
             socket.emit("calldriver", {
-                socket_ID: socket.id,
+                room: room,
                 SupportStaff_ID: Info.SupportStaff_ID,
                 User_ID: props.Info.User_ID,
                 //data gửi kèm đến server

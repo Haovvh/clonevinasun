@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import { useState } from 'react';
 import ReactMapGL, { GeolocateControl} from '@goongmaps/goong-map-react';
 import { MAP_KEY } from './GoongKEY';
+import io from "socket.io-client"
 import socketIOClient from "socket.io-client";
 import authHeader from '../services/auth-header';
 
@@ -10,7 +11,11 @@ const geolocateControlStyle = {
   right: 10,
   top: 10
 };
+const socket = io.connect(process.env.REACT_APP_WEBSOCKETHOST)
+//const socket = socketIOClient.(process.env.REACT_APP_WEBSOCKETHOST)
 export default function GongMapDriver(props) {
+
+  
   
   const [viewport, setViewport] = useState({
     latitude: 10.739,
@@ -21,7 +26,7 @@ export default function GongMapDriver(props) {
     
 
   useEffect (()=>{
-      var delay = 10000;
+      var delay = 100000;
       if (props.Online === "Online") {
           delay = 5000
       } else {
@@ -29,7 +34,7 @@ export default function GongMapDriver(props) {
       }
       const intervalId = setInterval( () => {
         const param = { query: 'token=' }
-          const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
+        
           
           socket.emit("update_lat_lng", {
             id: authHeader().id,

@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import GoongAPI from "../../Goong/GoongAPI";
 import GoongMap from "../../Goong/GoongMap";
-import socketIOClient from "socket.io-client";
+import io from "socket.io-client";
 import authHeader from "../../services/auth-header";
 import journeyService from "../../services/journey.service";
 import DriverJourney from "./driverJourney.component"
 import { MONEY_1KM_DISTANCE } from "../../public/const";
 
+const room = `000${authHeader().id}`;
 
-
+const socket = io.connect(process.env.REACT_APP_WEBSOCKETHOST)
 
 const required = value => {
     if (!value) {
@@ -21,9 +22,8 @@ const required = value => {
   };
 
 export default function PassengerJourney (props) {   
-    
-    const param = { query: 'token=' }
-    const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
+    //const param = { query: 'token=' }
+    //const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
 
     const [message, setMessage] = useState("");
     const [Price, setPrice] = useState(0);
@@ -100,9 +100,51 @@ export default function PassengerJourney (props) {
       })
 
     useEffect( () => {
-        socket.id = props.InfoPassenger.Passenger_ID;
+        socket.emit("join_room", {
+            room: room
+        });
+        console.log(room)
+        journeyService.getJourneybyPassenger().then(
+            response => {
+              if(response.data.resp) {
+                  setMessage(response.data.message)
+                console.log("Có Data")
+                const user = response.data.data;
+                console.log(user)
+                setDriverInfo({
+                  Fullname: user.FullName,
+                      Phone: user.Phone,
+                      Car_code: user.Car_code,
+                      Car_seat: user.Car_seat,
+                      Car_color: user.Car_color,
+                      Car_type: user.Car_type
+                })
+                setJourney(prevState => ({
+                  ...prevState,
+                  origin_Fulladdress: user.origin_Fulladdress,
+                  destination_Fulladdress: user.destination_Fulladdress,
+                  pointCodes: user.pointCode
+                }))
+                setDisabledbutton(true)
+                
+                setStatus("completeTrip")
+                setDisabled(true)
+              } else {
+                  
+              }
+                     
+            },
+            error => {
+              const resMessage =
+                (error.response &&
+                  error.response.data &&
+                  error.response.data.message) ||
+                error.message ||
+                error.toString(error.response.data.message);
+              setMessage(resMessage)                 
+              }
+          )
         //Lấy địa điểm đi thường xuyên
-        console.log("check api get all Journey")
         journeyService.getAllJourneybyPassenger().then(
             response => {
                 if(response.data.resp) {
@@ -123,48 +165,8 @@ export default function PassengerJourney (props) {
                 }
         )
         
-        console.log("check api get Journey")
-
-        journeyService.getJourneybyPassenger().then(
-          response => {
-            if(response.data.resp) {
-                setMessage(response.data.message)
-              console.log("Có Data")
-              const user = response.data.data;
-              console.log(user)
-              setDriverInfo({
-                Fullname: user.FullName,
-                    Phone: user.Phone,
-                    Car_code: user.Car_code,
-                    Car_seat: user.Car_seat,
-                    Car_color: user.Car_color,
-                    Car_type: user.Car_type
-              })
-              setJourney(prevState => ({
-                ...prevState,
-                origin_Fulladdress: user.origin_Fulladdress,
-                destination_Fulladdress: user.destination_Fulladdress,
-                pointCodes: user.pointCode
-              }))
-              
-              setStatus("completeTrip")
-              setDisabled(true)
-            } else {
-                
-            }
-                   
-          },
-          error => {
-            const resMessage =
-              (error.response &&
-                error.response.data &&
-                error.response.data.message) ||
-              error.message ||
-              error.toString(error.response.data.message);
-            setMessage(resMessage)                 
-            }
-        )
-    },[])
+        
+    },[socket])
 
     //lấy giá trị trong textbox 
     const handlePlaceFrom = (event) => {   
@@ -207,10 +209,7 @@ export default function PassengerJourney (props) {
                     if (jsonorigins && jsondestinations) {
                         console.log(" jsonorigins && jsondestinations ")
                         const distance = await GoongAPI.getDirection(jsonorigins,jsondestinations);                        
-                        const json = await distance.data.routes[0]                        
-                        console.log(json.legs[0].distance.text)
-                        console.log(json.legs[0].duration.text)
-                        console.log(json.overview_polyline.points);
+                        const json = await distance.data.routes[0]    
                         
                         setJourney(prevState => ({
                             ...prevState,
@@ -241,7 +240,7 @@ export default function PassengerJourney (props) {
             socket.emit("calldriver", {
                 
                 
-                socket_ID: socket.id,
+                room: room,
                 //data gửi kèm đến server
                 Passenger_ID: authHeader().id,
                 origin: {
@@ -282,6 +281,7 @@ export default function PassengerJourney (props) {
                 destination_LNG: "",
                 pointCodes: ""
             })
+            setPrice(0);
             setDistance_km();
             setDistance("");
             setStatus("showtripinfo");

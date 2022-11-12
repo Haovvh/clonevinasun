@@ -2,18 +2,17 @@ import React, { useState, useEffect} from "react";
 import GongMapDriver from "../../Goong/GoongMap.Driver";
 import authHeader from "../../services/auth-header";
 import AcceptJourney from "./acceptJourney.component"
-import socketIOClient from "socket.io-client";
+
 import driverService from "../../services/driver.service";
 import journeyService from "../../services/journey.service";
 import onlinedriverService from "../../services/onlinedriver.service";
+import io from "socket.io-client";
 
-
-
-
+const socket = io.connect(process.env.REACT_APP_WEBSOCKETHOST)
 export default function Driver (){  
 
-  const param = { query: 'token=' }
-  const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
+  //const param = { query: 'token=' }
+  //const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
 
   const [message, setMessage] = useState("");
   const [driverInfo, setDriverInfo] = useState({
@@ -30,6 +29,7 @@ export default function Driver (){
   const [Online, setOnline] = useState("");
   const [status, setStatus] = useState("Offline")
   const [PassengerInfo, setPassengerInfo] = useState({})
+  const [room, setRoom] = useState("");
   const [socket_ID, setSocket_ID] = useState("");
 
   useEffect(  () => {  
@@ -67,10 +67,9 @@ export default function Driver (){
         setMessage(resMessage)
         localStorage.removeItem("user");
         alert("Token is Exprise. Please Login");
-        window.location.assign("http://localhost:8082/login")
+        window.location.assign("http://localhost:8088/login")
       }
     )
-    socket.id = driverInfo.Driver_ID;
     //check xem có journey nào chưa hoàn thành không? gọi API journey
     console.log("check api get Journey")
     journeyService.getJourneybyDriver().then(
@@ -111,15 +110,12 @@ export default function Driver (){
 
   //Socket
   socket.on("broadcat",  (data) => {
-    console.log("driver");
-    console.log(data.drivers)
+    console.log(data)
     let driver = data.drivers;
 
     for(let i =0 ; i< driver.length; i++) {
-      console.log(driverInfo.Driver_ID)
-      console.log(driver_ID)
       if(driver_ID === driver[i].Driver_ID){
-        setSocket_ID(data.socket_ID)
+        setRoom(data.room)
         setStatus("isPassenger");
         setPassengerInfo(prevState =>  ({
           ...prevState,
@@ -190,8 +186,10 @@ export default function Driver (){
                   console.log(error)
                 }
               )
+              console.log(room)
               socket.emit("driveracceptjourney", {
-                socket_ID: socket_ID,
+                
+                room: room,
                 Driver_ID: driverInfo.Driver_ID,
                 Phone: driverInfo.Phone,
                 Fullname: driverInfo.Fullname,
@@ -225,7 +223,7 @@ export default function Driver (){
           if(response.data.resp) {
             setMessage(response.data.message)
             socket.emit("successjourney", {
-              socket_ID: socket_ID,
+              room: room,
               Status: "success"
             })
             onlinedriverService.putOnlineDriver("Online").then(
