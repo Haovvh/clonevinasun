@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import passengerService from "../../services/passenger.service";
 import PassengerJourney from "./passengerJourney.component"
-
+import { URL_RELOAD } from "../../public/const";
 
 export default function Passenger () {
 
@@ -40,7 +40,7 @@ export default function Passenger () {
         setMessage(resMessage)
         localStorage.removeItem("user");
         alert("Token is Exprise. Please Login");
-        window.location.assign("http://localhost:8082/login")
+        window.location.assign(URL_RELOAD)
       }
     )
   },[])

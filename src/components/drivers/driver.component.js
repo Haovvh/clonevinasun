@@ -7,6 +7,7 @@ import driverService from "../../services/driver.service";
 import journeyService from "../../services/journey.service";
 import onlinedriverService from "../../services/onlinedriver.service";
 import io from "socket.io-client";
+import { URL_RELOAD } from "../../public/const";
 
 const socket = io.connect(process.env.REACT_APP_WEBSOCKETHOST)
 export default function Driver (){  
@@ -67,7 +68,7 @@ export default function Driver (){
         setMessage(resMessage)
         localStorage.removeItem("user");
         alert("Token is Exprise. Please Login");
-        window.location.assign("http://localhost:8088/login")
+        window.location.assign(URL_RELOAD)
       }
     )
     //check xem có journey nào chưa hoàn thành không? gọi API journey
@@ -88,6 +89,7 @@ export default function Driver (){
                 Price: user.Price,
                 pointCode: user.pointCode 
           }))
+          setRoom(`000${user.Passenger_ID}`)
           setStatus("Donetrip")
           //setOnline("Online");
           

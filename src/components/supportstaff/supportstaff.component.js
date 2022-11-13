@@ -3,7 +3,7 @@ import userByPhoneService from "../../services/user-by-phone.service";
 import StaffJourney from "./staffJourney.component";
 import UserInfo from "./user-info.component";
 import passengerService from "../../services/passenger.service";
-
+import { URL_RELOAD } from "../../public/const";
 
 const required = value => {
   if (!value) {
@@ -61,7 +61,7 @@ export default function SupportStaff () {
           setMessage(resMessage)
           localStorage.removeItem("user");
           alert("Token is Expires. Please Login");
-          window.location.assign("http://localhost:8088/login")
+          window.location.assign(URL_RELOAD)
       }
     )
     

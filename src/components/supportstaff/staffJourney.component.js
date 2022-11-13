@@ -20,7 +20,6 @@ const required = value => {
 
 
 export default function StaffJourney (props) {
-
     
     const [Car_seat,setCar_seat] = useState('');
     const [Price, setPrice] = useState(0);
@@ -55,29 +54,6 @@ export default function StaffJourney (props) {
         Car_seat: "",
         Car_color: ""
     });
-    useEffect( ()=> {
-        socket.emit("join_room", {
-            room: room
-        });
-        passengerService.getPassenger().then(
-            response => {
-                if(response.data.resp) {
-                    setInfo(prevState => ({
-                        ...prevState,
-                        SupportStaff_ID: response.data.data.Passenger_ID,
-                        Fullname: response.data.data.Fullname,
-                        Phone: response.data.data.Phone
-                    }))
-                }
-                else {
-                    setMessage(response.data.message)
-                }
-            }, error => {
-                console.log(error)
-            }
-        )
-
-    },[socket])
 
     socket.on("driverinfo", (data) => {
         console.log(data)
@@ -90,7 +66,7 @@ export default function StaffJourney (props) {
             Car_color: data.Car_color
         })
     })
-    
+
     socket.on("successpassenger",  (data) => {
         console.log("success passenger");
         setDistance_km()
@@ -128,7 +104,36 @@ export default function StaffJourney (props) {
         setDisabled(false);    
       })
     
-        // mở nhận socket tên broadcat       
+        // mở nhận socket tên broadcat     
+
+
+    useEffect( ()=> {
+        socket.emit("join_room", {
+            room: room
+        });
+        passengerService.getPassenger().then(
+            response => {
+                if(response.data.resp) {
+                    setInfo(prevState => ({
+                        ...prevState,
+                        SupportStaff_ID: response.data.data.Passenger_ID,
+                        Fullname: response.data.data.Fullname,
+                        Phone: response.data.data.Phone
+                    }))
+                }
+                else {
+                    setMessage(response.data.message)
+                }
+            }, error => {
+                console.log(error)
+            }
+        )
+
+    },[socket])
+
+    
+    
+      
 
     const handleChange = (event) => {
         setCar_seat( event.target.value)
@@ -157,8 +162,7 @@ export default function StaffJourney (props) {
                     const jsonorigins = await origins.data.results[0].geometry.location.lat + ',' + origins.data.results[0].geometry.location.lng
     
                     const destinations = await GoongAPI.getGeocode(journey.destination_Fulladdress);
-                    console.log(destinations.data.results[0].formatted_address)
-
+                    
                     const jsondestinations = await destinations.data.results[0].geometry.location.lat + ',' + destinations.data.results[0].geometry.location.lng
                     setJourney(prevState => ({
                         ...prevState,
@@ -172,12 +176,8 @@ export default function StaffJourney (props) {
                         destination_LNG: destinations.data.results[0].geometry.location.lng
                     }))
                     if (jsonorigins && jsondestinations) {
-                        console.log(" jsonorigins && jsondestinations ")
                         const distance = await GoongAPI.getDirection(jsonorigins,jsondestinations);                        
-                        const json = await distance.data.routes[0]                        
-                        console.log(json.legs[0].distance.text)
-                        console.log(json.legs[0].duration.text)
-                        console.log(json.overview_polyline.points);
+                        const json = await distance.data.routes[0]
                         
                         setJourney(prevState => ({
                             ...prevState,

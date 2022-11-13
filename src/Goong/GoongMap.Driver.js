@@ -12,7 +12,6 @@ const geolocateControlStyle = {
   top: 10
 };
 const socket = io.connect(process.env.REACT_APP_WEBSOCKETHOST)
-//const socket = socketIOClient.(process.env.REACT_APP_WEBSOCKETHOST)
 export default function GongMapDriver(props) {
 
   
