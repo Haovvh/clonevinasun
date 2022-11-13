@@ -38,7 +38,6 @@ export default function Driver (){
     driverService.getDriver().then(
       response => {
         if(response.data.resp) {
-          console.log(response.data.data)
           setIsDriver(true);
           setDriverInfo(prevState => ({ ...prevState,
             Fullname: response.data.data.Fullname,
@@ -76,7 +75,7 @@ export default function Driver (){
     journeyService.getJourneybyDriver().then(
       response => {
         if(response.data.resp) {
-          console.log("Có Data")
+          console.log(response.data.data)
           const user = response.data.data;          
           setPassengerInfo( prevState => ({
                 ...prevState,
@@ -89,7 +88,12 @@ export default function Driver (){
                 Price: user.Price,
                 pointCode: user.pointCode 
           }))
-          setRoom(`000${user.Passenger_ID}`)
+          if(user.Passenger_ID) {
+            setRoom(`000${user.Passenger_ID}`)
+          } else if (user.SupportStaff_ID) {
+            setRoom(`000${user.SupportStaff_ID}`)
+          }
+          
           setStatus("Donetrip")
           //setOnline("Online");
           

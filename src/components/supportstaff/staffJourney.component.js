@@ -68,6 +68,7 @@ export default function StaffJourney (props) {
     })
 
     socket.on("successpassenger",  (data) => {
+        window.location.reload();
         console.log("success passenger");
         setDistance_km()
         setDistance("")
