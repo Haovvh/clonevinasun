@@ -5,13 +5,14 @@ import { MAP_KEY } from './GoongKEY';
 import io from "socket.io-client"
 import socketIOClient from "socket.io-client";
 import authHeader from '../services/auth-header';
+import onlinedriverService from '../services/onlinedriver.service';
 
 
 const geolocateControlStyle = {
   right: 10,
   top: 10
 };
-const socket = io.connect(process.env.REACT_APP_WEBSOCKETHOST)
+//const socket = io.connect(process.env.REACT_APP_WEBSOCKETHOST)
 export default function GongMapDriver(props) {
 
   
@@ -32,14 +33,20 @@ export default function GongMapDriver(props) {
         delay = 1000000
       }
       const intervalId = setInterval( () => {
-        const param = { query: 'token=' }
+        onlinedriverService.put5SecondOnlineDriver(viewport.longitude,viewport.latitude).then(
+          response => {
+            console.log(response)
+          }, error => {
+            console.log(error)
+          }
+        )
         
           
-          socket.emit("update_lat_lng", {
-            id: authHeader().id,
-            LAT: viewport.latitude,
-            LNG: viewport.longitude
-          });
+          // socket.emit("update_lat_lng", {
+          //   id: authHeader().id,
+          //   LAT: viewport.latitude,
+          //   LNG: viewport.longitude
+          // });
       }, delay) 
       return () => clearInterval(intervalId); //This is important   
     
