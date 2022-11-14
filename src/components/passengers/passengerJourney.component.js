@@ -7,7 +7,7 @@ import journeyService from "../../services/journey.service";
 import DriverJourney from "./driverJourney.component"
 import { MONEY_1KM_DISTANCE } from "../../public/const";
 
-const room = `000${authHeader().id}`;
+
 
 const socket = io.connect(process.env.REACT_APP_WEBSOCKETHOST)
 
@@ -22,6 +22,7 @@ const required = value => {
   };
 
 export default function PassengerJourney (props) {   
+    const room = `000${authHeader().id}`;
     //const param = { query: 'token=' }
     //const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
 

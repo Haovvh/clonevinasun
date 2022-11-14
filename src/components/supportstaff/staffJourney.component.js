@@ -7,7 +7,7 @@ import { MONEY_1KM_DISTANCE } from "../../public/const";
 import authHeader from "../../services/auth-header";
 
 const socket = io.connect(process.env.REACT_APP_WEBSOCKETHOST)
-const room = `000${authHeader().id}`;
+
 const required = value => {
     if (!value) {
       return (
@@ -20,6 +20,7 @@ const required = value => {
 
 
 export default function StaffJourney (props) {
+    const room = `000${authHeader().id}`;
     
     const [Car_seat,setCar_seat] = useState('');
     const [Price, setPrice] = useState(0);
