@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import AuthService from "../services/auth.service";
 import passengerService from "../services/passenger.service";
 import driverService from "../services/driver.service";
-import { URL_RELOAD } from "../../public/const";
+import { URL_RELOAD } from "../public/const";
 
 const required = value => {
   if (!value) {
@@ -70,7 +70,7 @@ export default function ProfilePassenger (props) {
   const handleOnClick = () => {
     if(statusCode === "isDriver") {
       console.log(Car_code !== "")
-      if(Car_code !== null && Car_color !== null && Car_owner !== null && Car_seat !== null && Car_type !== null) {
+      if(Car_code  && Car_color  && Car_owner  && Car_seat  && Car_type ) {
         
         console.log("Khac null")
         driverService.postDriver(
@@ -84,7 +84,7 @@ export default function ProfilePassenger (props) {
               localStorage.removeItem("user")
               alert(`Update Success.
               Please Login`)
-              window.location.assign("http://localhost:8082/login")
+              window.location.assign(URL_RELOAD)
             }
             else {
               setMessage(response.data.message)    
@@ -145,7 +145,7 @@ export default function ProfilePassenger (props) {
           setMessage(response.data.message)
           localStorage.removeItem("user")
           alert("Update Success. Please Login")
-          window.location.assign("http://localhost:8088/login")
+          window.location.assign(URL_RELOAD)
         }
         else {
           console.log("False")

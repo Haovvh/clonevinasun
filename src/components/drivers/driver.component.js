@@ -12,8 +12,6 @@ import { URL_RELOAD } from "../../public/const";
 const socket = io.connect(process.env.REACT_APP_WEBSOCKETHOST)
 export default function Driver (){  
 
-  //const param = { query: 'token=' }
-  //const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
 
   const [message, setMessage] = useState("");
   const [driverInfo, setDriverInfo] = useState({
@@ -31,7 +29,6 @@ export default function Driver (){
   const [status, setStatus] = useState("Offline")
   const [PassengerInfo, setPassengerInfo] = useState({})
   const [room, setRoom] = useState("");
-  const [socket_ID, setSocket_ID] = useState("");
 
   useEffect(  () => {  
     
