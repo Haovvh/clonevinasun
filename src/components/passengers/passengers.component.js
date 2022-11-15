@@ -23,7 +23,6 @@ export default function Passenger () {
         if(response.data.resp) {
           console.log(response.data);
           setInfoPassenger(response.data.data)
-          console.log(InfoPassenger)
         } else {
           console.log(response.status);
           setMessage(response.data.message)
