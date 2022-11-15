@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import AuthService from "../services/auth.service";
 import passengerService from "../services/passenger.service";
 import driverService from "../services/driver.service";
-
+import { URL_RELOAD } from "../../public/const";
 
 const required = value => {
   if (!value) {
@@ -59,7 +59,7 @@ export default function ProfilePassenger (props) {
         setMessage(resMessage)
         localStorage.removeItem("user");
         alert("Please Login");
-        window.location.assign("http://localhost:8082/login")
+        window.location.assign(URL_RELOAD)
       }
     )
     
