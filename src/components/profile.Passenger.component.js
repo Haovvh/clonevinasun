@@ -145,7 +145,7 @@ export default function ProfilePassenger (props) {
           setMessage(response.data.message)
           localStorage.removeItem("user")
           alert("Update Success. Please Login")
-          window.location.assign("http://localhost:8082/login")
+          window.location.assign("http://localhost:8088/login")
         }
         else {
           console.log("False")
