@@ -2,9 +2,6 @@ import React, {useEffect} from 'react';
 import { useState } from 'react';
 import ReactMapGL, { GeolocateControl} from '@goongmaps/goong-map-react';
 import { MAP_KEY } from './GoongKEY';
-import io from "socket.io-client"
-import socketIOClient from "socket.io-client";
-import authHeader from '../services/auth-header';
 import onlinedriverService from '../services/onlinedriver.service';
 
 
@@ -35,18 +32,12 @@ export default function GongMapDriver(props) {
       const intervalId = setInterval( () => {
         onlinedriverService.put5SecondOnlineDriver(viewport.longitude,viewport.latitude).then(
           response => {
-            console.log(response)
+            console.log(response.status)
           }, error => {
             console.log(error)
           }
         )
         
-          
-          // socket.emit("update_lat_lng", {
-          //   id: authHeader().id,
-          //   LAT: viewport.latitude,
-          //   LNG: viewport.longitude
-          // });
       }, delay) 
       return () => clearInterval(intervalId); //This is important   
     
