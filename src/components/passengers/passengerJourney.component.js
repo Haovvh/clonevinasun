@@ -153,6 +153,7 @@ export default function PassengerJourney (props) {
                     setPlaces(response.data.data)
                     
                 } else {
+                    console.log("False")
 
                 }
             }, error => {

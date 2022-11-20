@@ -137,26 +137,7 @@ export default function ProfilePassenger (props) {
           }
     }
   }
-  const handleSupportStaff = () => {
-    passengerService.putUserToSupportStaff(SupportStaffCode).then(
-      response => {
-        if(response.data.resp) {
-          console.log(response.data.resp)
-          setMessage(response.data.message)
-          localStorage.removeItem("user")
-          alert("Update Success. Please Login")
-          window.location.assign(URL_RELOAD)
-        }
-        else {
-          console.log("False")
-          setMessage(response.data.message)
-        }
-        
-      }, error => {
-        console.log(error)
-      }
-    )
-  }
+  
   const  handleIsDriver = () => {
     setStatusCode("isDriver");
     // if (statusCode === "isPassenger"){
@@ -185,31 +166,14 @@ export default function ProfilePassenger (props) {
                 </div>
               </div>
             )}
-            <div form-group>
-                  <label htmlFor="username">Input SupportStaff Code:</label>
-                        <input
-                                type="text"
-                                className="form-control"
-                                value={SupportStaffCode}
-                                onChange={(event) => setSupportStaffCode(event.target.value)}
-                                validations={[required]}
-                            />
-                        </div>
 
             <div className="form-group ">
-                        <div className="row">
-                            <div className="col-5 container">
-                            <button className="btn btn-primary " onClick={() => handleSupportStaff()}>
-                      Is SupportStaff
-                    </button>
-                            </div>
-                            {InfoPassenger.Phone && (
+            {InfoPassenger.Phone && (
                             <div className="col-5 container">
                             <button className="btn btn-primary " onClick={() => {
                             handleIsDriver()}}>Is Driver</button>
                             </div>
-                            )}
-                        </div>              
+                            )}              
             
         <div className="card">
           <div className="form-group">        

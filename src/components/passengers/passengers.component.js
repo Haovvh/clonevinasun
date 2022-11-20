@@ -47,11 +47,7 @@ export default function Passenger () {
     if(!(InfoPassenger.role )) {      
       return null;
     } 
-    if (!InfoPassenger.Phone) {
-      return (
-        <h3>Please update info. You book Driver</h3>
-      )
-    }
+    
     return (
       <React.Fragment>
         <div className="container ">

@@ -12,15 +12,13 @@ const geolocateControlStyle = {
 //const socket = io.connect(process.env.REACT_APP_WEBSOCKETHOST)
 export default function GongMapDriver(props) {
 
-  
-  
+   
   const [viewport, setViewport] = useState({
     latitude: 10.739,
     longitude: 106.6657,
-    zoom: 14
+    zoom: 11
   });
-  
-    
+      
 
   useEffect (()=>{
       var delay = 100000;

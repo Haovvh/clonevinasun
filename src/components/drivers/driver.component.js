@@ -9,10 +9,11 @@ import onlinedriverService from "../../services/onlinedriver.service";
 import io from "socket.io-client";
 import { URL_RELOAD } from "../../public/const";
 
-const socket = io.connect(process.env.REACT_APP_WEBSOCKETHOST)
+
 export default function Driver (){  
 
 
+  const socket = io.connect(process.env.REACT_APP_WEBSOCKETHOST)
   const [message, setMessage] = useState("");
   const [driverInfo, setDriverInfo] = useState({
     Driver_ID: "",

@@ -21,9 +21,10 @@ class AuthService {
     localStorage.removeItem("user");
   }
 
-  register(username, email, password) {
+  register(username, phone, email, password) {
     return axios.post(process.env.REACT_APP_API_URL + "/user/post-user", {
       username,
+      phone,
       email,
       password
     });
