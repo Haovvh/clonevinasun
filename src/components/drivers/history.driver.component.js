@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import journeyService from "../../services/journey.service";
-import '../../css/table.css'
+import "../../App.css"
 
 export default function HistoryDriver () {
     const [Info, setInfo] = useState([])
@@ -41,29 +41,28 @@ export default function HistoryDriver () {
             </h3>
             
           </header>
-          <div className="container totalTable">
-                <div className="col-md-12">
+          <div className="container">
+            
                     <table>
-                        <tbody>
-                            <tr>
-                                <th>Fullname Passenger:</th>
-                                <th>Orgin:</th>
-                                <th>Destination:</th>
-                                <th>Price:</th>
-                                <th>Distance:</th>
-                                <th>StartTime:</th>
-                                <th>endTime:</th>
+                      <thead>
+                      <tr>
+                                <th className="col">Full name</th>
+                                <th className="col">Orgin</th>
+                                <th className="col">Destination</th>
+                                <th className="col">Price</th>
+                                <th className="col">StartTime</th>
                             </tr>
+                      </thead>
+                        <tbody>
+                            
                             {Info.map((val, key) => {
                                 return (
                                     <tr key={key}>
-                                        <td >{val.Fullname}</td>
-                                        <td >{val.origin_Fulladdress}</td>
-                                        <td >{val.destination_Fulladdress}</td>
-                                        <td >{val.Price}</td>
-                                        <td >{val.distance_km}</td>
-                                        <td >{val.start_time}</td>
-                                        <td >{val.finish_time}</td>
+                                        <td data-label="Fullname" >{val.Fullname}</td>
+                                        <td data-label="Orgin">{val.origin_Fulladdress}</td>
+                                        <td data-label="Destination">{val.destination_Fulladdress}</td>
+                                        <td data-label="Price">{val.Price}</td>
+                                        <td data-label="StartTime">{val.start_time}</td>
                                     </tr>
                                 )
                             })}
@@ -71,8 +70,10 @@ export default function HistoryDriver () {
                         </tbody>
                     </table>
                 </div>
-            </div>
           </div>
+          <div>   
+
+</div>
           </React.Fragment>
     )
 }

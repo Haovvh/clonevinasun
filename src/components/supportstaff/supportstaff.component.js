@@ -71,7 +71,6 @@ export default function SupportStaff () {
     userByPhoneService.getUserbyPhone(Info.Phone).then(
       response => {
         if(response.data.resp) {
-          console.log("Response True")
           console.log(response.data.data)
           setInfo(prevState => ({
             ...prevState,
@@ -83,7 +82,6 @@ export default function SupportStaff () {
           setCountPlace(response.data.count)
         }
         else {
-          console.log("Response False")
           setMessage(response.data.message)          
         }                 
       },
@@ -133,7 +131,7 @@ export default function SupportStaff () {
         <div className="card-container">
           <div className="col-md-12">
             <div className="form-group">
-              <label htmlFor="phonecustomer">Phone User: </label>
+              <label htmlFor="phonecustomer">Phone User</label>
               <input
                 value={Info.Phone}
                 placeholder="Phone Customer"

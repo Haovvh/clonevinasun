@@ -67,14 +67,19 @@ class App extends Component {
     const { currentUser, showDriver, showPassenger, showSupportStaff } = this.state;
     
     return (
-      <div>
-        <nav className="navbar navbar-expand navbar-dark bg-dark">
+      <React.Fragment>
+        <nav id="saturday" className="navbar navbar-expand navbar-dark bg-dark">
           
-          <Link to={"/"} className="navbar-brand">
-            GoCarVietNam
-          </Link>
-          <div className="navbar-nav mr-auto">
-            
+          
+          <div className="navbar-nav mr-auto col-lg-3">
+            {currentUser && (
+              <Link to={"/"} className="navbar-brand">
+              GoCarVietNam
+            </Link>
+            )}
+          </div>
+
+            <div className="navbar-nav mr-auto col-lg-6">
             { currentUser && showDriver  && (
               <li className="nav-item">
                 <Link to={"/driver"} className="nav-link">
@@ -129,7 +134,9 @@ class App extends Component {
               </li>
             )}
           </div>
-
+          
+        
+        <div className="navbar-nav mr-auto col-lg-3">
           {currentUser ? (
             <div className="navbar-nav ml-auto">
               <li className="nav-item">
@@ -158,6 +165,7 @@ class App extends Component {
               </li>
             </div>
           )}
+          </div>
         </nav>
 
         <div className="container mt-3">
@@ -177,7 +185,7 @@ class App extends Component {
         </div>
 
         {/* <AuthVerify logOut={this.logOut}/> */}
-      </div>
+      </React.Fragment>
     );
   }
 }

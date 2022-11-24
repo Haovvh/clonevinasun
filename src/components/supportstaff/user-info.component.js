@@ -1,5 +1,5 @@
 import React from "react";
-import "../../css/table.css"
+import "../../App.css"
 
 export default function UserInfo(props) {
 
@@ -24,52 +24,64 @@ export default function UserInfo(props) {
                     </div>                    
                 </div>
             </div>
-            <div>
-                <h1>Call History:</h1>
-            </div>
+            
             <div className="container totalTable">
                 <div className="col-md-12">
-                    <table>
-                        <tbody>
-                            <tr>
-                                <th>Time:</th>
-                                <th>Origin:</th>
-                                <th>Destination:</th>
-                            </tr>
-                            {props.places.map((val, key) => {
-                                return (
-                                    <tr key={key}>
-                                        <td className="col-3">{val.start_time}</td>
-                                        <td className="col-3">{val.origin_Fulladdress}</td>
-                                        <td className="col-3">{val.destination_Fulladdress}</td>
-                                    </tr>
-                                )
-                            })}
-                        </tbody>
-                    </table>
-                </div>
+                <div>
+                <h3>Call History</h3>
             </div>
-            <div>
-                <h1>Place History:</h1>
-            </div>
-            <div className="container totalTable">
-                <div className="col-md-12">
-                    <table>
-                        <tbody>
-                            <tr>
-                                <th>Place:</th>
-                                <th>Count:</th>
+                <table>
+                      <thead>
+                      <tr>
+                                <th className="col">Time</th>
+                                <th className="col">Origin</th>
+                                <th className="col">Destination</th>
                             </tr>
+                      </thead>
+                        <tbody>
+                            
                             {props.countPlace.map((val, key) => {
                                 return (
                                     <tr key={key}>
-                                        <td className="col-3">{val.origin_Fulladdress}</td>
-                                        <td className="col-3">{val.Count}</td>
+                                        <td data-label="Time" >{val.start_time}</td>
+                                        <td data-label="Origin">{val.origin_Fulladdress}</td>
+                                        <td data-label="Destination">{val.destination_Fulladdress}</td>
                                     </tr>
                                 )
                             })}
+                            
                         </tbody>
                     </table>
+                    
+                </div>
+            </div>
+            <div className="container totalTable">
+                <div className="col-md-12">
+                    <div>
+                    <h3>Place History</h3>
+                    </div>
+                
+                <table>
+                      <thead>
+                      <tr>
+                                <th className="col">Place</th>
+                                <th className="col">Count</th>
+                            </tr>
+                      </thead>
+                        <tbody>
+                            
+                            {props.countPlace.map((val, key) => {
+                                return (
+                                    <tr key={key}>
+                                        <td data-label="Place" >{val.origin_Fulladdress}</td>
+                                        <td data-label="Count">{val.Count}</td>
+                                    </tr>
+                                )
+                            })}
+                            
+                        </tbody>
+                    </table>
+                    
                 </div>
             </div>
             </div>)}
