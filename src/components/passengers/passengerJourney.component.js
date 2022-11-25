@@ -40,12 +40,12 @@ export default function PassengerJourney (props) {
     })
 
     const [status, setStatus] = useState("showtripinfo")
-    const [places, setPlaces] = useState([{
-        Fullname:"",
-        origin_Fulladdress:"",
-        destination_Fulladdress:"",
-        Price: "",
-        start_time:""
+    
+    const [destination, setdestination] = useState([{
+        destination_Fulladdress:""
+    }])
+    const [origin, setorigin] = useState([{
+        origin_Fulladdress:""
     }])
     const [distance_km, setDistance_km] = useState();
     const [distance, setDistance] = useState("")
@@ -108,7 +108,11 @@ export default function PassengerJourney (props) {
             response => {
                 if(response.data.resp) {
                     console.log(response.data.data)
-                    setPlaces(response.data.data)
+                    setorigin([
+                        response.data.origin
+                    ])
+                    setdestination([response.data.destination])
+                    //setPlaces(response.data.data)
                     
                 } else {
 
@@ -320,7 +324,7 @@ export default function PassengerJourney (props) {
                             disabled={disabled}
                         />
                         <datalist id="placeFrom">
-                            {places.map((item, key) => 
+                            {origin.map((item, key) => 
                             <option key = {key} value={item.origin_Fulladdress}/>)} 
                         </datalist>
                     </div>
@@ -337,8 +341,8 @@ export default function PassengerJourney (props) {
                             validations={[required]}
                         />
                         <datalist id="placeTo">
-                            {places.map((item, key) => 
-                            <option key = {key} value={item.origin_Fulladdress}/>)} 
+                            {destination.map((item, key) => 
+                            <option key = {key} value={item.destination_Fulladdress}/>)} 
                         </datalist>
                     </div>
                     <div className="form-group">

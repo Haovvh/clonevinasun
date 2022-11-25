@@ -45,7 +45,7 @@ export default function HistoryPassenger () {
                 <table>
                       <thead>
                       <tr>
-                                <th className="col">Full name</th>
+                                <th className="col">Fullname</th>
                                 <th className="col">Orgin</th>
                                 <th className="col">Destination</th>
                                 <th className="col">Price</th>
