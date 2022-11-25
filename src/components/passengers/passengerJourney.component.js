@@ -23,8 +23,6 @@ const required = value => {
 
 export default function PassengerJourney (props) {   
     const room = `000${authHeader().id}`;
-    //const param = { query: 'token=' }
-    //const socket = socketIOClient(process.env.REACT_APP_WEBSOCKETHOST, param )
 
     const [message, setMessage] = useState("");
     const [Price, setPrice] = useState(0);
@@ -42,7 +40,13 @@ export default function PassengerJourney (props) {
     })
 
     const [status, setStatus] = useState("showtripinfo")
-    const [places, setPlaces] = useState([])
+    const [places, setPlaces] = useState([{
+        Fullname:"",
+        origin_Fulladdress:"",
+        destination_Fulladdress:"",
+        Price: "",
+        start_time:""
+    }])
     const [distance_km, setDistance_km] = useState();
     const [distance, setDistance] = useState("")
     const [disabled, setDisabled] = useState(false);
@@ -55,16 +59,6 @@ export default function PassengerJourney (props) {
         Car_seat: "",
         Car_color: ""
     });
-    const [nodriver, setNoDriver] = useState(false);
-
-    const [messageList, setMessageList] = useState([]);
-    //socket
-
-    
-    
-    
-    
-    
 
     useEffect( () => {
         socket.emit("join_room", {
@@ -75,7 +69,6 @@ export default function PassengerJourney (props) {
             response => {
               if(response.data.resp) {
                   setMessage(response.data.message)
-                console.log("Có Data")
                 const user = response.data.data;
                 console.log(user)
                 setDriverInfo({
@@ -181,7 +174,6 @@ export default function PassengerJourney (props) {
         
     },[socket])
 
-    //lấy giá trị trong textbox 
     const handlePlaceFrom = (event) => {   
         setJourney(prevState => ({
             ...prevState,origin_Fulladdress: event.target.value
@@ -193,7 +185,7 @@ export default function PassengerJourney (props) {
             ...prevState,destination_Fulladdress: event.target.value
         }))
     }
-    //event click
+
     const handleOnClick = async () => {
         if(status === "showtripinfo") {
             try {
@@ -243,7 +235,6 @@ export default function PassengerJourney (props) {
             }
             
         } else if (status === "bookdriver") {
-            console.log("Book driver")
             //check connect xem được không? 
 
             //socket gọi đến server tìm tài xế

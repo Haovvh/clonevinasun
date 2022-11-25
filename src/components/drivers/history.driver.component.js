@@ -3,13 +3,18 @@ import journeyService from "../../services/journey.service";
 import "../../App.css"
 
 export default function HistoryDriver () {
-    const [Info, setInfo] = useState([])
+    const [Info, setInfo] = useState([{
+      Fullname:"",
+      origin_Fulladdress:"",
+      destination_Fulladdress: "",
+      Price: "",
+      start_time: ""
+    }])
     
     useEffect ( () => {
         journeyService.getAllJourneybydriverID().then(
             response => {
                 if(response.data.resp) {
-                  console.log("Có Data")
                   const user = response.data.data;
                   setInfo(response.data.data)
                   console.log(user)
