@@ -55,56 +55,22 @@ export default function PassengerJourney (props) {
         Car_seat: "",
         Car_color: ""
     });
+    const [nodriver, setNoDriver] = useState(false);
 
+    const [messageList, setMessageList] = useState([]);
     //socket
 
-    socket.on("driverinfo", (data) => {
-        console.log(data)
-        setDriverInfo({
-            Fullname: data.Fullname,
-            Phone: data.Phone,
-            Car_type: data.Car_type,
-            Car_code: data.Car_code,
-            Car_seat: data.Car_seat,
-            Car_color: data.Car_color
-        })
-        setDisabledbutton(true)
-    })
     
-    socket.on("successpassenger",  (data) => {
-        
-        setStatus("showtripinfo")
-        setPrice("");
-        setJourney({
-            origin_Id: "",
-            origin_Fulladdress: "",
-            origin_LAT: "",
-            origin_LNG: "",
-            destination_Id: "",
-            destination_Fulladdress: "",
-            destination_LAT: "",
-            destination_LNG: "",
-            pointCodes: ""
-        })  
-        setDisabledbutton(false)
-        setDistance_km();
-        setDistance("")
-        setDisabled(false);
-        setDriverInfo({
-            Fullname: "",
-            Phone: "",
-            Car_type: "",
-            Car_code: "",
-            Car_seat: "",
-            Car_color: ""
-        });    
-      })
+    
+    
+    
+    
 
     useEffect( () => {
         socket.emit("join_room", {
             room: room
         });
-        console.log(room)
+        
         journeyService.getJourneybyPassenger().then(
             response => {
               if(response.data.resp) {
@@ -145,7 +111,6 @@ export default function PassengerJourney (props) {
               setMessage(resMessage)                 
               }
           )
-        //Lấy địa điểm đi thường xuyên
         journeyService.getAllJourneybyPassenger().then(
             response => {
                 if(response.data.resp) {
@@ -153,7 +118,6 @@ export default function PassengerJourney (props) {
                     setPlaces(response.data.data)
                     
                 } else {
-                    console.log("False")
 
                 }
             }, error => {
@@ -166,6 +130,53 @@ export default function PassengerJourney (props) {
                   setMessage(resMessage)            
                 }
         )
+        socket.on("nodriver", (...data) => {   
+            if(room === data[0].data) {
+                alert("No Driver")
+                window.location.reload();
+            }
+        })
+        socket.on("successpassenger",  (data) => {
+        
+            setStatus("showtripinfo")
+            setPrice("");
+            setJourney({
+                origin_Id: "",
+                origin_Fulladdress: "",
+                origin_LAT: "",
+                origin_LNG: "",
+                destination_Id: "",
+                destination_Fulladdress: "",
+                destination_LAT: "",
+                destination_LNG: "",
+                pointCodes: ""
+            })  
+            setDisabledbutton(false)
+            setDistance_km();
+            setDistance("")
+            setDisabled(false);
+            setDriverInfo({
+                Fullname: "",
+                Phone: "",
+                Car_type: "",
+                Car_code: "",
+                Car_seat: "",
+                Car_color: ""
+            });   
+            window.location.reload(); 
+          })
+          socket.on("driverinfo", (data) => {
+            console.log(data)
+            setDriverInfo({
+                Fullname: data.Fullname,
+                Phone: data.Phone,
+                Car_type: data.Car_type,
+                Car_code: data.Car_code,
+                Car_seat: data.Car_seat,
+                Car_color: data.Car_color
+            })
+            setDisabledbutton(true)
+        })
         
         
     },[socket])
@@ -187,14 +198,11 @@ export default function PassengerJourney (props) {
         if(status === "showtripinfo") {
             try {
                 if (journey.origin_Fulladdress  && journey.destination_Fulladdress ) {
-                    console.log("Khong duoc null");
-                    console.log(journey.origin_Fulladdress + " Test " + journey.destination_Fulladdress)
                     const origins = await GoongAPI.getGeocode(journey.origin_Fulladdress);
 
                     const jsonorigins = await origins.data.results[0].geometry.location.lat + ',' + origins.data.results[0].geometry.location.lng
     
                     const destinations = await GoongAPI.getGeocode(journey.destination_Fulladdress);
-                    console.log(destinations.data.results[0].formatted_address)
 
                     const jsondestinations = await destinations.data.results[0].geometry.location.lat + ',' + destinations.data.results[0].geometry.location.lng
                     setJourney(prevState => ({
@@ -209,7 +217,7 @@ export default function PassengerJourney (props) {
                         destination_LNG: destinations.data.results[0].geometry.location.lng
                     }))
                     if (jsonorigins && jsondestinations) {
-                        console.log(" jsonorigins && jsondestinations ")
+                        
                         const distance = await GoongAPI.getDirection(jsonorigins,jsondestinations);                        
                         const json = await distance.data.routes[0]    
                         
@@ -309,7 +317,7 @@ export default function PassengerJourney (props) {
                         
                     </div>
                     <div className="form-group">
-                        <label htmlFor="username">Origin:</label>
+                        <label htmlFor="username">Origin</label>
                         <input
                             list="placeFrom" name="browser"
                             placeholder="Origin"
@@ -326,7 +334,7 @@ export default function PassengerJourney (props) {
                         </datalist>
                     </div>
                     <div className="form-group">
-                        <label htmlFor="username">Destination:</label>
+                        <label htmlFor="username">Destination</label>
                         <input
                             list="placeTo"
                             placeholder="Destination"

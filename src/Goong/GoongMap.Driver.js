@@ -21,6 +21,7 @@ export default function GongMapDriver(props) {
       
 
   useEffect (()=>{
+    
       var delay = 100000;
       if (props.Online === "Online") {
           delay = 5000
@@ -28,6 +29,7 @@ export default function GongMapDriver(props) {
         delay = 1000000
       }
       const intervalId = setInterval( () => {
+        console.log(viewport.latitude)
         onlinedriverService.put5SecondOnlineDriver(viewport.longitude,viewport.latitude).then(
           response => {
             console.log(response.status)
@@ -39,8 +41,9 @@ export default function GongMapDriver(props) {
       }, delay) 
       return () => clearInterval(intervalId); //This is important   
     
-    },[]
+    },[viewport.latitude, viewport.longitude]
   )
+
 
   
   return (
@@ -56,8 +59,9 @@ export default function GongMapDriver(props) {
     >
       <GeolocateControl
         style={geolocateControlStyle}
-        positionOptions={{ enableHighAccuracy: true }}
-        trackUserLocation={true}
+        positionOptions={{ enableHighAccuracy: true, timeout: 6000 }}
+        trackUserLocation={false}
+        
         auto
       />
       

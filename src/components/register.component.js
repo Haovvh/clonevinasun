@@ -63,6 +63,7 @@ export default class Register extends Component {
     this.onChangeUsername = this.onChangeUsername.bind(this);
     this.onChangePhone = this.onChangePhone.bind(this);
     this.onChangeEmail = this.onChangeEmail.bind(this);
+    this.onChangeGender = this.onChangeGender.bind(this);
     this.onChangePassword = this.onChangePassword.bind(this);
 
     this.state = {
@@ -70,6 +71,7 @@ export default class Register extends Component {
       phone: "",
       email: "",
       password: "",
+      gender:  "male",
       successful: false,
       message: ""
     };
@@ -78,6 +80,11 @@ export default class Register extends Component {
   onChangeUsername(event) {
     this.setState({
       username: event.target.value
+    });
+  }
+  onChangeGender(event) {
+    this.setState({
+      gender: event.target.value
     });
   }
 
@@ -114,7 +121,8 @@ export default class Register extends Component {
         this.state.username,
         this.state.phone,
         this.state.email,
-        this.state.password
+        this.state.password,
+        this.state.gender
       ).then(
         
         response => {
@@ -161,7 +169,7 @@ export default class Register extends Component {
             }}
           >
             {!this.state.successful && (
-              <div>
+              <div className="row">
                 <div className="form-group">
                   <label htmlFor="username">Username</label>
                   <Input
@@ -170,7 +178,7 @@ export default class Register extends Component {
                     className="form-control"
                     name="username"
                     value={this.state.username}
-                    onChange={this.onChangeUsername}
+                    onChange={this.onChangeUsername}  
                     validations={[required, vusername]}
                   />
                 </div>
@@ -200,7 +208,12 @@ export default class Register extends Component {
                     validations={[required, email]}
                   />
                 </div>
-
+                <div className="form-group">
+                        <select value={this.state.gender} onChange = {this.onChangeGender}>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>                
                 <div className="form-group">
                   <label htmlFor="password">Password</label>
                   <Input

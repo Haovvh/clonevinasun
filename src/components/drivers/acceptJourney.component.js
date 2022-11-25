@@ -15,7 +15,7 @@ export default function AcceptJourney(props) {
             <div className=" card-container">
                 <div className=" col-md-12">
                     <div className="form-group">
-                        <label htmlFor="username">FullName Passenger:</label>
+                        <label htmlFor="username">FullName Passenger</label>
                         <input
                             type="text"
                             className="form-control"
@@ -24,7 +24,7 @@ export default function AcceptJourney(props) {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="username">Phone:</label>
+                        <label htmlFor="username">Phone</label>
                         <input
                             type="text"
                             className="form-control"
@@ -33,7 +33,7 @@ export default function AcceptJourney(props) {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="username">Origin:</label>
+                        <label htmlFor="username">Origin</label>
                         <input
                             type="text"
                             className="form-control"
@@ -42,7 +42,7 @@ export default function AcceptJourney(props) {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="">Destination:</label>
+                        <label htmlFor="">Destination</label>
                         <input
                             type="text"
                             className="form-control"
@@ -51,7 +51,7 @@ export default function AcceptJourney(props) {
                         />
                     </div>    
                     <div className="form-group">
-                        <label htmlFor="">Total Money:</label>
+                        <label htmlFor="">Total Money</label>
                         <input
                             type="text"
                             className="form-control"

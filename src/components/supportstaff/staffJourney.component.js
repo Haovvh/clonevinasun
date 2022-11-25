@@ -56,55 +56,6 @@ export default function StaffJourney (props) {
         Car_color: ""
     });
 
-    socket.on("driverinfo", (data) => {
-        console.log(data)
-        setDriverInfo({
-            Fullname: data.Fullname,
-            Phone: data.Phone,
-            Car_type: data.Car_type,
-            Car_code: data.Car_code,
-            Car_seat: data.Car_seat,
-            Car_color: data.Car_color
-        })
-    })
-
-    socket.on("successpassenger",  (data) => {
-        window.location.reload();
-        console.log("success passenger");
-        setDistance_km()
-        setDistance("")
-        setPrice("");
-        setDriverInfo({
-            Fullname: "",
-            Phone: "",
-            Car_type: "",
-            Car_code: "",
-            Car_seat: "",
-            Car_color: ""
-        })
-        setStatus("showtripinfo")
-        setDisabled(false)
-        setDistance("")
-        setJourney({
-            origin_Id: "",
-            origin_Fulladdress: "",
-            origin_LAT: "",
-            origin_LNG: "",
-            destination_Id: "",
-            destination_Fulladdress: "",
-            destination_LAT: "",
-            destination_LNG: "",
-            pointCodes: ""
-        })  
-        setMessage("");
-    
-        setInfo({
-            SupportStaff_ID: "",
-            Phone: "",
-            Fullname: ""
-        });
-        setDisabled(false);    
-      })
     
         // mở nhận socket tên broadcat     
 
@@ -130,6 +81,62 @@ export default function StaffJourney (props) {
                 console.log(error)
             }
         )
+        socket.on("nodriver", (...data) => {   
+            if(room === data[0].data) {
+                alert("No Driver")
+                window.location.reload();
+            }
+        })
+        socket.on("driverinfo", (data) => {
+            console.log(data)
+            setDriverInfo({
+                Fullname: data.Fullname,
+                Phone: data.Phone,
+                Car_type: data.Car_type,
+                Car_code: data.Car_code,
+                Car_seat: data.Car_seat,
+                Car_color: data.Car_color
+            })
+        })
+    
+        socket.on("successpassenger",  (data) => {
+            window.location.reload();
+            console.log("success passenger");
+            setDistance_km()
+            setDistance("")
+            setPrice("");
+            setDriverInfo({
+                Fullname: "",
+                Phone: "",
+                Car_type: "",
+                Car_code: "",
+                Car_seat: "",
+                Car_color: ""
+            })
+            setStatus("showtripinfo")
+            setDisabled(false)
+            setDistance("")
+            setJourney({
+                origin_Id: "",
+                origin_Fulladdress: "",
+                origin_LAT: "",
+                origin_LNG: "",
+                destination_Id: "",
+                destination_Fulladdress: "",
+                destination_LAT: "",
+                destination_LNG: "",
+                pointCodes: ""
+            })  
+            setMessage("");
+        
+            setInfo({
+                SupportStaff_ID: "",
+                Phone: "",
+                Fullname: ""
+            });
+            setDisabled(false);    
+          })
+        
 
     },[socket])
 
@@ -204,10 +211,6 @@ export default function StaffJourney (props) {
             }
             
         } else if (status === "bookdriver") {
-            console.log("Book driver")
-            //check connect xem được không? 
-            
-            //socket gọi đến server tìm tài xế
             socket.emit("calldriver", {
                 room: room,
                 SupportStaff_ID: Info.SupportStaff_ID,
@@ -257,7 +260,7 @@ export default function StaffJourney (props) {
                             {Price >0 && <h4>Price: {Price} VND</h4>}
                         </div>
                         <div className="form-group">
-                            <label htmlFor="username">Origin:</label>
+                            <label htmlFor="username">Origin</label>
                             <input
                                 list="placeFrom" name="browser"
                                 placeholder="Origin"
@@ -273,7 +276,7 @@ export default function StaffJourney (props) {
                             </datalist>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="username">Destination:</label>
+                            <label htmlFor="username">Destination</label>
                             <input
                                 list="placeTo"
                                 placeholder="Destination"
@@ -289,7 +292,7 @@ export default function StaffJourney (props) {
                             </datalist>
                         </div>
                         <div className="form-group">
-                        <label htmlFor="username">Car Seat:</label>
+                        <label htmlFor="username">Car Seat</label>
                         <select className="form-control" value={Car_seat} onChange = {(event) =>{handleChange(event)}}>
                             <option value="4">Car 4 Seat</option>
                             <option value="7">Car 7 Seat</option>
@@ -302,7 +305,7 @@ export default function StaffJourney (props) {
                                     <button className="btn btn-primary" 
                                     onClick={() => {
                                     handleOnClick()}}>
-                                    {(status === "showtripinfo") ? "Show Trip Info" : 
+                                    {(status === "showtripinfo") ? "Show Trip" : 
                                     (status === "bookdriver") ? "Book Driver" : 
                                     (status === "completeTrip") ? "Complete Trip" : 
                                     "Show Trip Info"}

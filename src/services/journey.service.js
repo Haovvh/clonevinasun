@@ -6,7 +6,9 @@ class Journey {
   //customerInfo.Passenger_ID,customerInfo.User_ID, 
   //customerInfo.SupportStaff_ID, driver_ID, customerInfo.Price
   createjourney(Passenger_ID, User_ID, SupportStaff_ID, driver_ID, Price, origin_Id, 
-    origin_Fulladdress, destination_Id, destination_Fulladdress, distance_km, pointCode) {
+    origin_Fulladdress, origin_lat, 
+    origin_lng , destination_Id, destination_Fulladdress, destination_lat, destination_lng,
+     distance_km, pointCode) {
     return axios.post(process.env.REACT_APP_API_URL + "/journey/post-journey", {
       Passenger_ID, 
       User_ID, 
@@ -15,8 +17,12 @@ class Journey {
       Price, 
       origin_Id, 
       origin_Fulladdress, 
+      origin_lat,
+      origin_lng,
       destination_Id, 
       destination_Fulladdress, 
+      destination_lat,
+      destination_lng,
       distance_km, 
       pointCode
     },

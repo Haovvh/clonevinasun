@@ -20,7 +20,7 @@ export default function DriverJourney(props) {
             <div  className=" card-container">
                 <div className=" col-md-12">
                     <div className="form-group">
-                        <label htmlFor="username">Driver:</label>
+                        <label htmlFor="username">Driver</label>
                         <input
                             type="text"
                             className="form-control"
@@ -29,7 +29,7 @@ export default function DriverJourney(props) {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="username">Phone:</label>
+                        <label htmlFor="username">Phone</label>
                         <input
                             type="phone"
                             className="form-control"
@@ -38,7 +38,7 @@ export default function DriverJourney(props) {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="username">Car Code:</label>
+                        <label htmlFor="username">Car Code</label>
                         <input
                             type="text"
                             className="form-control"
@@ -47,7 +47,7 @@ export default function DriverJourney(props) {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="">Car Info:</label>
+                        <label htmlFor="">Car Info</label>
                         <input
                             type="text"
                             className="form-control"

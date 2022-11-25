@@ -10,11 +10,11 @@ class Passenger {
     { headers: authHeader()
      });
   }
-  postUser(Fullname, Phone, Date_of_birth) {
+  postUser(Fullname, Phone, Date_of_birth, gender) {
     return axios.post(process.env.REACT_APP_API_URL + "/user-by-phone/post-user-by-phone", {
       Fullname, 
       Phone, 
-      Date_of_birth
+      Date_of_birth, gender
     },
     { headers: authHeader() });
   }

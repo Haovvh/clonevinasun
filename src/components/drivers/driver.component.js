@@ -130,12 +130,19 @@ export default function Driver (){
           Phone: data.user.Phone,
           origin_Id: data.user.origin.placeId,
           origin_Fulladdress: data.user.origin.fulladdress,
+          origin_lat: data.user.origin.origin_lat,
+          origin_lng: data.user.origin.origin_lng,
           destination_Id: data.user.destination.placeId,
           destination_Fulladdress: data.user.destination.fulladdress, 
+          destination_lat: data.user.destination.destination_lat,
+          destination_lng: data.user.destination.destination_lng, 
           distance_km: data.user.distance_km,
           Price: data.user.Price,
           pointCode: data.user.pointCode
         }))
+        setTimeout(() => {
+          window.location.reload();
+        }, 10000)
       }
     }
   }) 
@@ -172,12 +179,12 @@ export default function Driver (){
       setStatus("Online");
 
     } else if(status === "isPassenger") {
-      //goi api tạo journey
-      console.log(" vao status co khach")
       journeyService.createjourney(PassengerInfo.Passenger_ID,PassengerInfo.User_ID, 
         PassengerInfo.SupportStaff_ID, driver_ID, PassengerInfo.Price,
         PassengerInfo.origin_Id, PassengerInfo.origin_Fulladdress,
+        PassengerInfo.origin_lat, PassengerInfo.origin_lng,
         PassengerInfo.destination_Id, PassengerInfo.destination_Fulladdress, 
+        PassengerInfo.destination_lat, PassengerInfo.destination_lng, 
         PassengerInfo.distance_km, PassengerInfo.pointCode).then(
           response => {
             if(response.data.resp) {

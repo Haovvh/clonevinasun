@@ -33,8 +33,18 @@ export default function SupportStaff () {
     Fullname: ""
   });
   
-  const [places, setPlaces] = useState([])
-  const [countPlace, setCountPlace]= useState([]);
+  const [places, setPlaces] = useState([{
+    origin_Fulladdress:"",
+    Count: ""
+  }])
+  const [countPlace, setCountPlace]= useState([
+    {
+      start_time: "",
+      origin_Fulladdress: "",
+      destination_Fulladdress: ""
+      
+    }
+  ]);
 
   useEffect( () =>{
     passengerService.getPassenger().then(
@@ -71,7 +81,7 @@ export default function SupportStaff () {
     userByPhoneService.getUserbyPhone(Info.Phone).then(
       response => {
         if(response.data.resp) {
-          console.log(response.data.data)
+          console.log(response.data)
           setInfo(prevState => ({
             ...prevState,
             Fullname: response.data.data.Fullname,
@@ -82,7 +92,13 @@ export default function SupportStaff () {
           setCountPlace(response.data.count)
         }
         else {
-          setMessage(response.data.message)          
+                 
+          setInfo(prevState => ({
+            ...prevState,
+            Fullname: response.data.data.Fullname,
+            User_ID: response.data.data.User_ID
+          }))
+          setHidden(true)
         }                 
       },
       error => {
@@ -126,7 +142,7 @@ export default function SupportStaff () {
               </div>
             )}
 
-        <StaffJourney place = {places} Info= {Info} show = {hidden}/> 
+        
 
         <div className="card-container">
           <div className="col-md-12">
@@ -152,7 +168,7 @@ export default function SupportStaff () {
                 </button>
               </div>) : null}              
             </div>          
-            
+            <StaffJourney place = {places} Info= {Info} show = {hidden}/> 
           </div>
           <UserInfo show = {show}  places = {places} countPlace = {countPlace} Fullname={Info.Fullname}/>          
         </div>

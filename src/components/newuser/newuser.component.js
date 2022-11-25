@@ -17,21 +17,22 @@ export default function NewUser () {
     const [NewInfo, setNewInfo] = useState({
         Phone: "",
         Fullname: "",
-        Date_of_birth: new Date().toISOString().substring(0, 10)
+        Date_of_birth: new Date().toISOString().substring(0, 10),
+        gender: "male"
       })
 
 
     const handleClickNewUSer = () => {
-        userByPhoneService.postUser(NewInfo.Fullname, NewInfo.Phone, NewInfo.Date_of_birth).then(
+        userByPhoneService.postUser(NewInfo.Fullname, NewInfo.Phone, NewInfo.Date_of_birth, NewInfo.gender).then(
           response => {
             console.log(response.data)
             if (response.data.resp) {
-              console.log("True")
-              setMessage(response.data.message)
+              alert("Create User Success")
+              
               setNewInfo({
                 Fullname: "",
                 Phone: "",
-                Date_of_birth: ""
+                Date_of_birth: new Date().toISOString().substring(0, 10)
               })
             } else {
               console.log("False")
@@ -60,7 +61,7 @@ export default function NewUser () {
               <div>
                 
                 <div className="form-group">
-                    <label htmlFor="phoneuser">Phone User: </label>
+                    <label htmlFor="phoneuser">Phone User </label>
                     <input
                       value={NewInfo.Phone}
                       placeholder="Phone User"
@@ -71,7 +72,7 @@ export default function NewUser () {
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="phonecustomer">FullName: </label>
+                    <label htmlFor="phonecustomer">FullName </label>
                     <input
                       value={NewInfo.Fullname}
                       placeholder="Fullname"
@@ -82,7 +83,7 @@ export default function NewUser () {
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="">Date of birth: </label>
+                    <label htmlFor="">Date of birth </label>
                     <input
                       value={NewInfo.Date_of_birth}
                       placeholder="Date of birth"
@@ -91,7 +92,14 @@ export default function NewUser () {
                       validations={[required]}
                       onChange={(event) => setNewInfo(prevState => ({...prevState, Date_of_birth: event.target.value}))}
                     />
-                  </div>            
+                  </div> 
+                  <div className="form-group">
+                        <select value={NewInfo.gender} 
+                        onChange={(event) => setNewInfo(prevState => ({...prevState, gender: event.target.value}))}>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>               
       
               </div>
               <div>        
