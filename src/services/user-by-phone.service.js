@@ -2,7 +2,7 @@ import axios from 'axios';
 import authHeader from './auth-header';
 
 
-class Passenger {
+class UserPhone {
   
   
   getUserbyPhone(Phone) {
@@ -30,4 +30,4 @@ class Passenger {
   
 }
 
-export default new Passenger();
+export default new UserPhone();

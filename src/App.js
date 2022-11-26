@@ -3,7 +3,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import AuthService from "./services/auth.service";
-
+import Dropdown from 'react-bootstrap/Dropdown';
 import Login from "./components/login.component";
 import Register from "./components/register.component";
 import Home from "./components/home.component";
@@ -138,17 +138,20 @@ class App extends Component {
         
         <div className="navbar-nav mr-auto col-lg-3">
           {currentUser ? (
+            
             <div className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link to={"/profile"} className="nav-link">
-                  Welcome {currentUser.name}
-                </Link>
-              </li>
-              <li className="nav-item">
-                <a href="/login" className="nav-link" onClick={this.logOut}>
-                  LogOut
-                </a>
-              </li>
+              <Dropdown>
+              <Dropdown.Toggle variant="dark" id="dropdown-basic">
+                Setting
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                <Dropdown.Item href="/profile" >Profile</Dropdown.Item>
+                <Dropdown.Item href="/login" onClick={this.logOut}>LogOut</Dropdown.Item>
+                <Dropdown.Item href="/">Something else</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>             
+              
             </div>
           ) : (
             <div className="navbar-nav ml-auto">

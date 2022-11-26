@@ -4,6 +4,9 @@ import StaffJourney from "./staffJourney.component";
 import UserInfo from "./user-info.component";
 import passengerService from "../../services/passenger.service";
 import { URL_RELOAD } from "../../public/const";
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 const required = value => {
   if (!value) {
@@ -92,6 +95,7 @@ export default function SupportStaff () {
           setCountPlace(response.data.count)
         }
         else {
+          console.log(response)
                  
           setInfo(prevState => ({
             ...prevState,
@@ -102,14 +106,15 @@ export default function SupportStaff () {
         }                 
       },
       error => {
-        
+        alert("No User")
+        window.location.reload();
+        console.log(error)
         const resMessage =
           (error.response &&
             error.response.data &&
             error.response.data.message) ||
           error.message ||
-          error.toString();  
-          setMessage(resMessage)               
+          error.toString();            
         })
   }  
 
@@ -143,31 +148,26 @@ export default function SupportStaff () {
             )}
 
         
-
-        <div className="card-container">
-          <div className="col-md-12">
-            <div className="form-group">
-              <label htmlFor="phonecustomer">Phone User</label>
-              <input
+          <div className="card-container">
+          <InputGroup className="mb-3">
+          <input
                 value={Info.Phone}
                 placeholder="Phone Customer"
                 type="phone"
                 className="form-control"
                 onChange={(event) => { handlePhone(event) }}
               />
-            </div>
-            
-            <div className="row">
-              <div className="form-group col-5">
-                <button className="btn btn-primary" onClick={() => {handleClick()}}>
-                  Search</button>
-              </div>
-              {(hidden) ? (<div className="col-5" >
-                <button className="btn btn-primary" onClick={() => setShow(!show)}>
-                  {!show ? "Show" :"Hidden"}
-                </button>
-              </div>) : null}              
-            </div>          
+        <button  onClick={() => {handleClick()}} variant="btn btn-primary" id="button-addon2">
+        Search
+        </button>
+        {hidden ? 
+        <button  onClick={() => setShow(!show)} variant="btn btn-primary" id="button-addon2">
+        {!show ? "Show" :"Hidden"}
+        </button> : null}
+      </InputGroup>
+          </div>
+        <div className="card-container">
+          <div className="col-md-12">
             <StaffJourney place = {places} Info= {Info} show = {hidden}/> 
           </div>
           <UserInfo show = {show}  places = {places} countPlace = {countPlace} Fullname={Info.Fullname}/>          

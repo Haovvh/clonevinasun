@@ -211,7 +211,6 @@ export default function Driver (){
               })                  
               setStatus("Donetrip")
             } else {
-              setMessage(response.data.message)
               setStatus("Online")
               setPassengerInfo({})
             }     
